@@ -13,6 +13,10 @@
             --text-color: #333;
             --white: #ffffff;
             --light-bg: #fff0f5;
+            --success: #4caf50;
+            --info: #2196f3;
+            --danger: #e53935;
+            --warning: #ff9800;
         }
         * {
             box-sizing: border-box;
@@ -28,7 +32,7 @@
             min-height: 100vh;
         }
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             background: var(--white);
             padding: 30px;
@@ -41,23 +45,41 @@
             margin-bottom: 30px;
             font-size: 1.8rem;
         }
+        .section {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: var(--light-bg);
+            border-radius: 12px;
+            border: 1px solid #fce4ec;
+        }
+        .section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
         .form-group {
             display: flex;
             gap: 10px;
-            margin-bottom: 20px;
             flex-wrap: wrap;
         }
-        input[type="text"], input[type="number"] {
+        input[type="text"], input[type="number"], input[type="tel"] {
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 8px;
             flex: 1;
-            min-width: 180px;
+            min-width: 160px;
             font-size: 1rem;
             outline: none;
-            transition: border-color 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: var(--white);
         }
-        input[type="text"]:focus, input[type="number"]:focus {
+        input:focus {
             border-color: var(--primary-color);
             box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
         }
@@ -70,6 +92,7 @@
             transition: background 0.3s, transform 0.1s;
             color: var(--white);
             font-size: 0.95rem;
+            white-space: nowrap;
         }
         button:active {
             transform: scale(0.97);
@@ -80,11 +103,23 @@
         .btn-add:hover {
             background-color: var(--secondary-color);
         }
+        .btn-search {
+            background-color: var(--info);
+        }
+        .btn-search:hover {
+            background-color: #1976d2;
+        }
+        .btn-clear {
+            background-color: #9e9e9e;
+        }
+        .btn-clear:hover {
+            background-color: #757575;
+        }
         .btn-action {
             background-color: var(--accent-color);
             color: var(--secondary-color);
             padding: 6px 12px;
-            font-size: 0.85em;
+            font-size: 0.82em;
             margin: 2px;
             border-radius: 5px;
             font-weight: 600;
@@ -94,54 +129,63 @@
             color: var(--white);
         }
         .btn-danger {
-            background-color: #e53935;
+            background-color: var(--danger);
             color: var(--white);
         }
         .btn-danger:hover {
             background-color: #b71c1c;
         }
         .btn-export {
-            background-color: #2196f3;
+            background-color: var(--info);
         }
         .btn-export:hover {
             background-color: #1976d2;
         }
         .btn-import {
-            background-color: #4caf50;
+            background-color: var(--success);
         }
         .btn-import:hover {
             background-color: #388e3c;
         }
+        .btn-backup {
+            background-color: var(--warning);
+        }
+        .btn-backup:hover {
+            background-color: #f57c00;
+        }
+        .btn-restore {
+            background-color: #9c27b0;
+        }
+        .btn-restore:hover {
+            background-color: #7b1fa2;
+        }
         .top-actions {
             display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
             flex-wrap: wrap;
             gap: 10px;
         }
-        .top-actions > div {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
+        .top-actions button {
+            flex: 1;
+            min-width: 140px;
         }
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 15px;
             border-radius: 10px;
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
         th, td {
-            padding: 15px;
+            padding: 14px 12px;
             text-align: left;
             border-bottom: 1px solid #eee;
         }
         th {
             background-color: var(--light-bg);
             color: var(--secondary-color);
-            font-weight: 600;
-            font-size: 0.9rem;
+            font-weight: 700;
+            font-size: 0.85rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -165,30 +209,71 @@
         .points-display {
             font-weight: 700;
             color: var(--secondary-color);
+            font-size: 1.1rem;
         }
-        #import-file {
+        .search-result-info {
+            padding: 10px 15px;
+            background: #e3f2fd;
+            color: #0d47a1;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .search-result-info button {
+            padding: 6px 14px;
+            font-size: 0.85rem;
+        }
+        #import-file, #restore-file {
             display: none;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #2e1b24f2;
+            color: #ffeef4;
+            padding: 12px 24px;
+            border-radius: 60px;
+            font-weight: 600;
+            box-shadow: 0 20px 35px -8px #3a1f2b;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            max-width: 90vw;
+            text-align: center;
+            font-size: 0.95rem;
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
         }
         @media (max-width: 600px) {
             .container {
                 padding: 20px 15px;
             }
             h1 {
-                font-size: 1.4rem;
+                font-size: 1.3rem;
             }
             th, td {
-                padding: 10px 8px;
-                font-size: 0.85rem;
+                padding: 10px 6px;
+                font-size: 0.8rem;
             }
             .btn-action {
                 padding: 5px 8px;
-                font-size: 0.75em;
-            }
-            .top-actions > div {
-                width: 100%;
+                font-size: 0.72em;
             }
             .top-actions button {
-                flex: 1;
+                flex: 1 1 100%;
+            }
+            .section {
+                padding: 15px;
             }
         }
     </style>
@@ -197,51 +282,96 @@
     <div class="container">
         <h1>🎀 কসমেটিক শপ লয়্যালটি পয়েন্ট 🎀</h1>
 
-        <!-- Add Customer Form -->
-        <div class="form-group">
-            <input type="text" id="cust-name" placeholder="গ্রাহকের নাম">
-            <input type="text" id="cust-phone" placeholder="ফোন নম্বর">
-            <input type="number" id="cust-points" placeholder="পয়েন্ট" min="0">
-            <button class="btn-add" onclick="addCustomer()">গ্রাহক যোগ করুন</button>
-        </div>
-
-        <!-- Data Tools -->
-        <div class="top-actions">
-            <div>
-                <button class="btn-export" onclick="exportData()">📤 এক্সপোর্ট ডেটা (JSON)</button>
-                <button class="btn-import" onclick="document.getElementById('import-file').click()">📥 ইমপোর্ট ডেটা (JSON)</button>
-                <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+        <!-- নতুন গ্রাহক যোগ করার সেকশন -->
+        <div class="section">
+            <div class="section-title">➕ নতুন গ্রাহক যোগ করুন</div>
+            <div class="form-group">
+                <input type="text" id="cust-name" placeholder="গ্রাহকের নাম">
+                <input type="tel" id="cust-phone" placeholder="ফোন নম্বর">
+                <input type="number" id="cust-points" placeholder="পয়েন্ট" min="0" value="0">
+                <button class="btn-add" onclick="addCustomer()">গ্রাহক যোগ করুন</button>
             </div>
         </div>
 
-        <!-- Customer Table -->
-        <table>
-            <thead>
-                <tr>
-                    <th>নাম</th>
-                    <th>ফোন নম্বর</th>
-                    <th>বর্তমান পয়েন্ট</th>
-                    <th>অ্যাকশন</th>
-                </tr>
-            </thead>
-            <tbody id="customer-table">
-                <!-- গ্রাহকের ডেটা এখানে দেখা যাবে -->
-            </tbody>
-        </table>
+        <!-- সার্চ সেকশন -->
+        <div class="section">
+            <div class="section-title">🔍 গ্রাহক খুঁজুন</div>
+            <div class="form-group">
+                <input type="text" id="search-input" placeholder="নাম বা ফোন নম্বর দিয়ে খুঁজুন...">
+                <button class="btn-search" onclick="searchCustomer()">সার্চ করুন</button>
+                <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
+            </div>
+            <div id="search-info"></div>
+        </div>
+
+        <!-- ডেটা ব্যাকআপ এবং টুলস সেকশন -->
+        <div class="section">
+            <div class="section-title">💾 ডেটা ব্যাকআপ এবং টুলস</div>
+            <div class="top-actions">
+                <button class="btn-export" onclick="exportData()">📤 এক্সপোর্ট (JSON)</button>
+                <button class="btn-import" onclick="document.getElementById('import-file').click()">📥 ইমপোর্ট (JSON)</button>
+                <button class="btn-backup" onclick="createBackup()">💾 ব্যাকআপ সংরক্ষণ</button>
+                <button class="btn-restore" onclick="document.getElementById('restore-file').click()">🔄 ব্যাকআপ থেকে ফেরত</button>
+                <input type="file" id="import-file" accept=".json" onchange="importData(event)">
+                <input type="file" id="restore-file" accept=".json" onchange="restoreBackup(event)">
+            </div>
+        </div>
+
+        <!-- গ্রাহক তালিকা -->
+        <div class="section">
+            <div class="section-title">👥 গ্রাহক তালিকা (<span id="customer-count">0</span>)</div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>নাম</th>
+                        <th>ফোন নম্বর</th>
+                        <th>পয়েন্ট</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="customer-table">
+                    <!-- গ্রাহকের ডেটা এখানে দেখা যাবে -->
+                </tbody>
+            </table>
+        </div>
     </div>
 
-    <script>
-        // ---------- STATE ----------
-        let customers = [];
+    <!-- Toast notification -->
+    <div class="toast" id="toast"></div>
 
-        // ---------- LOAD DATA ----------
+    <script>
+        // ---------- স্টেট ----------
+        let customers = [];
+        let filteredIndexes = null; // সার্চ ফিল্টার ট্র্যাকিং
+
+        const STORAGE_KEY = 'cosmeticsCustomers';
+        const BACKUP_KEY = 'cosmeticsCustomersBackup';
+
+        // ---------- টোস্ট নোটিফিকেশন ----------
+        let toastTimer = null;
+        function showToast(message, duration = 2500) {
+            const toastEl = document.getElementById('toast');
+            toastEl.textContent = message;
+            toastEl.classList.add('show');
+            if (toastTimer) clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, duration);
+        }
+
+        // ---------- ডেটা লোড / সেভ ----------
         function loadCustomers() {
             try {
-                const stored = localStorage.getItem('cosmeticsCustomers');
+                const stored = localStorage.getItem(STORAGE_KEY);
                 if (stored) {
                     const parsed = JSON.parse(stored);
                     if (Array.isArray(parsed)) {
-                        customers = parsed;
+                        customers = parsed.filter(item =>
+                            item && typeof item === 'object' &&
+                            typeof item.name === 'string' &&
+                            typeof item.phone === 'string' &&
+                            typeof item.points === 'number' && !isNaN(item.points)
+                        );
                     } else {
                         customers = [];
                     }
@@ -249,61 +379,76 @@
                     customers = [];
                 }
             } catch (error) {
-                console.error('ডেটা লোড করতে সমস্যা:', error);
+                console.error('ডেটা লোড সমস্যা:', error);
                 customers = [];
             }
         }
 
-        // ---------- SAVE DATA ----------
         function saveCustomers() {
             try {
-                localStorage.setItem('cosmeticsCustomers', JSON.stringify(customers));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
             } catch (error) {
-                console.error('ডেটা সেভ করতে সমস্যা:', error);
-                alert('ডেটা সেভ করতে সমস্যা হয়েছে!');
+                console.error('ডেটা সেভ সমস্যা:', error);
+                showToast('⚠️ ডেটা সেভ করতে সমস্যা হয়েছে!');
             }
         }
 
-        // ---------- RENDER TABLE ----------
+        // ---------- XSS এস্কেপ ----------
+        function escapeHtml(text) {
+            if (text === null || text === undefined) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        // ---------- টেবিল রেন্ডার ----------
         function updateTable() {
             const tableBody = document.getElementById('customer-table');
+            const countEl = document.getElementById('customer-count');
             tableBody.innerHTML = '';
+
+            countEl.textContent = customers.length;
 
             if (customers.length === 0) {
                 const emptyRow = document.createElement('tr');
                 emptyRow.innerHTML = '<td colspan="4" class="empty-message">কোন গ্রাহক নেই। নতুন গ্রাহক যোগ করুন।</td>';
                 tableBody.appendChild(emptyRow);
-                saveCustomers();
                 return;
             }
 
-            customers.forEach((customer, index) => {
+            // Determine which indexes to show (filtered or all)
+            let indexesToShow = customers.map((_, i) => i);
+            if (filteredIndexes !== null && filteredIndexes.length > 0) {
+                indexesToShow = filteredIndexes;
+            } else if (filteredIndexes !== null && filteredIndexes.length === 0) {
+                // No matches from search
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = '<td colspan="4" class="empty-message">🔍 কোন গ্রাহক খুঁজে পাওয়া যায়নি।</td>';
+                tableBody.appendChild(emptyRow);
+                return;
+            }
+
+            indexesToShow.forEach(index => {
+                const customer = customers[index];
+                if (!customer) return;
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${escapeHtml(customer.name)}</td>
                     <td>${escapeHtml(customer.phone)}</td>
                     <td class="points-display">${customer.points}</td>
                     <td class="actions-cell">
-                        <button class="btn-action" onclick="addPointsPrompt(${index})">➕ পয়েন্ট যোগ</button>
-                        <button class="btn-action" onclick="deductPointsPrompt(${index})">➖ পয়েন্ট ডিডাক্ট</button>
+                        <button class="btn-action" onclick="addPointsPrompt(${index})">➕ যোগ</button>
+                        <button class="btn-action" onclick="deductPointsPrompt(${index})">➖ ডিডাক্ট</button>
+                        <button class="btn-action" onclick="editCustomerPrompt(${index})">✏️ এডিট</button>
                         <button class="btn-danger btn-action" onclick="deleteCustomer(${index})">🗑️ ডিলিট</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
-
-            saveCustomers();
         }
 
-        // ---------- ESCAPE HTML (XSS protection) ----------
-        function escapeHtml(text) {
-            if (!text && text !== 0) return '';
-            const div = document.createElement('div');
-            div.textContent = String(text);
-            return div.innerHTML;
-        }
-
-        // ---------- ADD CUSTOMER ----------
+        // ---------- গ্রাহক যোগ ----------
         function addCustomer() {
             const nameInput = document.getElementById('cust-name');
             const phoneInput = document.getElementById('cust-phone');
@@ -314,111 +459,212 @@
             const points = parseInt(pointsInput.value) || 0;
 
             if (!name || !phone) {
-                alert('অনুগ্রহ করে নাম এবং ফোন নম্বর লিখুন।');
+                showToast('⚠️ অনুগ্রহ করে নাম এবং ফোন নম্বর লিখুন।');
                 return;
             }
 
             if (points < 0) {
-                alert('পয়েন্ট ঋণাত্মক হতে পারে না।');
+                showToast('⚠️ পয়েন্ট ঋণাত্মক হতে পারে না।');
                 return;
             }
 
-            // Check for duplicate phone number
+            // ডুপ্লিকেট ফোন নম্বর চেক
             const existingIndex = customers.findIndex(c => c.phone === phone);
             if (existingIndex !== -1) {
-                const confirmUpdate = confirm(`এই ফোন নম্বর (${phone}) ইতিমধ্যে ${customers[existingIndex].name} নামে নিবন্ধিত।\nআপনি কি পয়েন্ট যোগ করতে চান?`);
+                const confirmUpdate = confirm(`এই ফোন নম্বর (${phone}) ইতিমধ্যে "${customers[existingIndex].name}" নামে নিবন্ধিত।\nআপনি কি পয়েন্ট যোগ করতে চান?`);
                 if (confirmUpdate) {
                     customers[existingIndex].points += points;
+                    saveCustomers();
+                    clearSearch();
                     updateTable();
-                    nameInput.value = '';
-                    phoneInput.value = '';
-                    pointsInput.value = '';
+                    showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে।`);
                 }
                 return;
             }
 
-            const newCustomer = {
+            customers.push({
                 name: name,
                 phone: phone,
                 points: points
-            };
+            });
 
-            customers.push(newCustomer);
             nameInput.value = '';
             phoneInput.value = '';
-            pointsInput.value = '';
+            pointsInput.value = '0';
+
+            saveCustomers();
+            clearSearch();
             updateTable();
+            showToast(`🌸 নতুন গ্রাহক "${name}" যোগ হয়েছে।`);
         }
 
-        // ---------- ADD POINTS ----------
+        // ---------- পয়েন্ট যোগ ----------
         function addPointsPrompt(index) {
             if (index < 0 || index >= customers.length) return;
-
             const customer = customers[index];
-            const pointsToAdd = prompt(`${customer.name} (${customer.phone}) কে কত পয়েন্ট যোগ করতে চান?`, '10');
+            const input = prompt(`"${customer.name}" কে কত পয়েন্ট যোগ করতে চান?`, '10');
+            if (input === null) return;
 
-            if (pointsToAdd === null) return; // Cancelled
-
-            const trimmed = pointsToAdd.trim();
+            const trimmed = input.trim();
             if (trimmed === '' || isNaN(trimmed)) {
-                alert('অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
+                showToast('⚠️ অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
                 return;
             }
 
-            const points = parseInt(trimmed);
+            const points = parseInt(trimmed, 10);
             if (points <= 0) {
-                alert('পয়েন্ট ধনাত্মক হতে হবে।');
+                showToast('⚠️ পয়েন্ট ধনাত্মক হতে হবে।');
                 return;
             }
 
             customers[index].points += points;
+            saveCustomers();
+            clearSearch();
             updateTable();
+            showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে।`);
         }
 
-        // ---------- DEDUCT POINTS ----------
+        // ---------- পয়েন্ট ডিডাক্ট ----------
         function deductPointsPrompt(index) {
             if (index < 0 || index >= customers.length) return;
-
             const customer = customers[index];
-            const pointsToDeduct = prompt(`${customer.name} (${customer.phone}) থেকে কত পয়েন্ট ডিডাক্ট করতে চান?\nবর্তমান পয়েন্ট: ${customer.points}`, '10');
+            const input = prompt(`"${customer.name}" থেকে কত পয়েন্ট ডিডাক্ট করতে চান?\nবর্তমান পয়েন্ট: ${customer.points}`, '10');
+            if (input === null) return;
 
-            if (pointsToDeduct === null) return; // Cancelled
-
-            const trimmed = pointsToDeduct.trim();
+            const trimmed = input.trim();
             if (trimmed === '' || isNaN(trimmed)) {
-                alert('অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
+                showToast('⚠️ অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
                 return;
             }
 
-            const points = parseInt(trimmed);
+            const points = parseInt(trimmed, 10);
             if (points <= 0) {
-                alert('পয়েন্ট ধনাত্মক হতে হবে।');
+                showToast('⚠️ পয়েন্ট ধনাত্মক হতে হবে।');
                 return;
             }
 
             if (customers[index].points >= points) {
                 customers[index].points -= points;
+                saveCustomers();
+                clearSearch();
                 updateTable();
+                showToast(`✅ ${points} পয়েন্ট ডিডাক্ট হয়েছে।`);
             } else {
-                alert(`পর্যাপ্ত পয়েন্ট নেই! বর্তমান পয়েন্ট: ${customers[index].points}`);
+                showToast(`⚠️ পর্যাপ্ত পয়েন্ট নেই! বর্তমান: ${customers[index].points}`);
             }
         }
 
-        // ---------- DELETE CUSTOMER ----------
+        // ---------- গ্রাহক এডিট ----------
+        function editCustomerPrompt(index) {
+            if (index < 0 || index >= customers.length) return;
+            const customer = customers[index];
+
+            const newName = prompt('নতুন নাম লিখুন:', customer.name);
+            if (newName === null) return;
+            const trimmedName = newName.trim();
+            if (!trimmedName) {
+                showToast('⚠️ নাম খালি হতে পারে না।');
+                return;
+            }
+
+            const newPhone = prompt('নতুন ফোন নম্বর লিখুন:', customer.phone);
+            if (newPhone === null) return;
+            const trimmedPhone = newPhone.trim();
+            if (!trimmedPhone) {
+                showToast('⚠️ ফোন নম্বর খালি হতে পারে না।');
+                return;
+            }
+
+            // ডুপ্লিকেট চেক (নিজের বাদে)
+            const dupIndex = customers.findIndex((c, i) => i !== index && c.phone === trimmedPhone);
+            if (dupIndex !== -1) {
+                showToast('⚠️ এই ফোন নম্বর অন্য গ্রাহকের কাছে আছে।');
+                return;
+            }
+
+            const newPointsStr = prompt('নতুন পয়েন্ট লিখুন:', customer.points);
+            if (newPointsStr === null) return;
+            const newPoints = parseInt(newPointsStr, 10);
+            if (isNaN(newPoints) || newPoints < 0) {
+                showToast('⚠️ বৈধ পয়েন্ট লিখুন।');
+                return;
+            }
+
+            customers[index] = {
+                name: trimmedName,
+                phone: trimmedPhone,
+                points: newPoints
+            };
+
+            saveCustomers();
+            clearSearch();
+            updateTable();
+            showToast('✏️ গ্রাহকের তথ্য আপডেট হয়েছে।');
+        }
+
+        // ---------- গ্রাহক ডিলিট ----------
         function deleteCustomer(index) {
             if (index < 0 || index >= customers.length) return;
-
             const customer = customers[index];
             if (confirm(`আপনি কি নিশ্চিত যে "${customer.name}" (${customer.phone}) কে ডিলিট করতে চান?`)) {
                 customers.splice(index, 1);
+                saveCustomers();
+                clearSearch();
                 updateTable();
+                showToast('🗑️ গ্রাহক ডিলিট হয়েছে।');
             }
         }
 
-        // ---------- EXPORT DATA ----------
+        // ---------- সার্চ ----------
+        function searchCustomer() {
+            const query = document.getElementById('search-input').value.trim().toLowerCase();
+            const searchInfo = document.getElementById('search-info');
+
+            if (!query) {
+                clearSearch();
+                showToast('⚠️ অনুগ্রহ করে কিছু লিখুন।');
+                return;
+            }
+
+            const matches = customers
+                .map((customer, index) => ({ customer, index }))
+                .filter(({ customer }) =>
+                    customer.name.toLowerCase().includes(query) ||
+                    customer.phone.toLowerCase().includes(query)
+                );
+
+            filteredIndexes = matches.map(m => m.index);
+
+            if (matches.length === 0) {
+                searchInfo.innerHTML = `
+                    <div class="search-result-info" style="background:#ffebee; color:#b71c1c;">
+                        🔍 "${escapeHtml(query)}" এর জন্য কোন গ্রাহক পাওয়া যায়নি।
+                        <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
+                    </div>
+                `;
+            } else {
+                searchInfo.innerHTML = `
+                    <div class="search-result-info">
+                        🔍 "${escapeHtml(query)}" এর জন্য ${matches.length} জন গ্রাহক পাওয়া গেছে।
+                        <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
+                    </div>
+                `;
+            }
+
+            updateTable();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('search-info').innerHTML = '';
+            filteredIndexes = null;
+            updateTable();
+        }
+
+        // ---------- এক্সপোর্ট ----------
         function exportData() {
             if (customers.length === 0) {
-                alert('এক্সপোর্ট করার জন্য কোন ডেটা নেই।');
+                showToast('⚠️ এক্সপোর্ট করার জন্য কোন ডেটা নেই।');
                 return;
             }
 
@@ -431,13 +677,14 @@
                 document.body.appendChild(downloadAnchorNode);
                 downloadAnchorNode.click();
                 downloadAnchorNode.remove();
+                showToast('📤 ডেটা এক্সপোর্ট সফল হয়েছে।');
             } catch (error) {
                 console.error('এক্সপোর্ট সমস্যা:', error);
-                alert('ডেটা এক্সপোর্ট করতে সমস্যা হয়েছে!');
+                showToast('⚠️ এক্সপোর্ট করতে সমস্যা হয়েছে!');
             }
         }
 
-        // ---------- IMPORT DATA ----------
+        // ---------- ইমপোর্ট ----------
         function importData(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -449,11 +696,11 @@
                     const importedData = JSON.parse(e.target.result);
 
                     if (!Array.isArray(importedData)) {
-                        alert("ভুল ফাইল ফরম্যাট! একটি JSON অ্যারে প্রত্যাশিত।");
+                        showToast('⚠️ ভুল ফাইল ফরম্যাট! JSON অ্যারে প্রত্যাশিত।');
+                        event.target.value = '';
                         return;
                     }
 
-                    // Validate each item
                     const validData = [];
                     let invalidCount = 0;
 
@@ -474,14 +721,15 @@
                     }
 
                     if (validData.length === 0) {
-                        alert("ফাইলে কোন বৈধ গ্রাহক ডেটা পাওয়া যায়নি!");
+                        showToast('⚠️ ফাইলে কোন বৈধ ডেটা নেই!');
+                        event.target.value = '';
                         return;
                     }
 
                     const confirmImport = confirm(
-                        `${validData.length} টি গ্রাহক রেকর্ড ইমপোর্ট করা হবে।\n` +
+                        `${validData.length} টি গ্রাহক রেকর্ড ইমপোর্ট হবে।\n` +
                         `এটি বর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবে।\n` +
-                        (invalidCount > 0 ? `\n(${invalidCount} টি অবৈধ এন্ট্রি বাদ দেওয়া হয়েছে)` : '') +
+                        (invalidCount > 0 ? `\n(${invalidCount} টি অবৈধ এন্ট্রি বাদ পড়বে)` : '') +
                         `\n\nআপনি কি চালিয়ে যেতে চান?`
                     );
 
@@ -491,28 +739,141 @@
                     }
 
                     customers = validData;
+                    saveCustomers();
+                    clearSearch();
                     updateTable();
-                    alert(`✅ ${validData.length} টি রেকর্ড সফলভাবে ইমপোর্ট হয়েছে!`);
+                    showToast(`✅ ${validData.length} টি রেকর্ড ইমপোর্ট সফল।`);
 
                 } catch (error) {
                     console.error('ইমপোর্ট সমস্যা:', error);
-                    alert("JSON ফাইল পার্স করতে সমস্যা হয়েছে! ফাইলটি বৈধ কিনা তা পরীক্ষা করুন।");
+                    showToast('⚠️ JSON ফাইল পার্স করতে সমস্যা!');
                 } finally {
                     event.target.value = '';
                 }
             };
 
             reader.onerror = function() {
-                alert("ফাইল পড়তে সমস্যা হয়েছে!");
+                showToast('⚠️ ফাইল পড়তে সমস্যা!');
                 event.target.value = '';
             };
 
             reader.readAsText(file);
         }
 
-        // ---------- INITIALIZE ----------
-        loadCustomers();
-        updateTable();
+        // ---------- ব্যাকআপ তৈরি ----------
+        function createBackup() {
+            if (customers.length === 0) {
+                showToast('⚠️ ব্যাকআপ করার জন্য কোন ডেটা নেই।');
+                return;
+            }
+            try {
+                localStorage.setItem(BACKUP_KEY, JSON.stringify(customers));
+                const time = new Date().toLocaleString('bn-BD');
+                showToast(`💾 ব্যাকআপ সেভ হয়েছে (${time})`);
+            } catch (error) {
+                console.error('ব্যাকআপ সমস্যা:', error);
+                showToast('⚠️ ব্যাকআপ সংরক্ষণ ব্যর্থ!');
+            }
+        }
+
+        // ---------- ব্যাকআপ থেকে ফেরত ----------
+        function restoreBackup(event) {
+            const file = event.target.files[0];
+
+            // If file selected, restore from file
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        const backupData = JSON.parse(e.target.result);
+                        if (!Array.isArray(backupData)) {
+                            showToast('⚠️ ভুল ব্যাকআপ ফাইল!');
+                            event.target.value = '';
+                            return;
+                        }
+
+                        if (!confirm(`ব্যাকআপ ফাইলে ${backupData.length} টি রেকর্ড আছে।\nবর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবেন?`)) {
+                            event.target.value = '';
+                            return;
+                        }
+
+                        customers = backupData;
+                        saveCustomers();
+                        clearSearch();
+                        updateTable();
+                        showToast('🔄 ব্যাকআপ ফাইল থেকে ডেটা ফেরত এসেছে।');
+                    } catch (error) {
+                        console.error('রিস্টোর সমস্যা:', error);
+                        showToast('⚠️ ব্যাকআপ ফাইল পার্স করা যায়নি!');
+                    } finally {
+                        event.target.value = '';
+                    }
+                };
+                reader.readAsText(file);
+                return;
+            }
+
+            // Otherwise restore from localStorage backup
+            try {
+                const storedBackup = localStorage.getItem(BACKUP_KEY);
+                if (!storedBackup) {
+                    // If no localStorage backup, prompt to select a file
+                    if (confirm('লোকাল স্টোরেজে কোন ব্যাকআপ নেই।\nআপনি কি একটি ব্যাকআপ ফাইল সিলেক্ট করতে চান?')) {
+                        document.getElementById('restore-file').click();
+                    }
+                    return;
+                }
+
+                const backupData = JSON.parse(storedBackup);
+                if (!Array.isArray(backupData)) {
+                    showToast('⚠️ ব্যাকআপ ডেটা বৈধ নয়!');
+                    return;
+                }
+
+                if (!confirm(`লোকাল ব্যাকআপে ${backupData.length} টি রেকর্ড আছে।\nবর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবেন?`)) {
+                    return;
+                }
+
+                customers = backupData;
+                saveCustomers();
+                clearSearch();
+                updateTable();
+                showToast('🔄 লোকাল ব্যাকআপ থেকে ডেটা ফেরত এসেছে।');
+
+            } catch (error) {
+                console.error('রিস্টোর সমস্যা:', error);
+                showToast('⚠️ রিস্টোর করতে সমস্যা হয়েছে!');
+            }
+        }
+
+        // ---------- এন্টার কী হ্যান্ডলিং ----------
+        function handleEnterKey(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addCustomer();
+            }
+        }
+
+        // ---------- ইনিশিয়ালাইজ ----------
+        function init() {
+            loadCustomers();
+            updateTable();
+
+            // Enter key handlers
+            document.getElementById('cust-name').addEventListener('keypress', handleEnterKey);
+            document.getElementById('cust-phone').addEventListener('keypress', handleEnterKey);
+            document.getElementById('cust-points').addEventListener('keypress', handleEnterKey);
+
+            document.getElementById('search-input').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchCustomer();
+                }
+            });
+        }
+
+        // Start the app
+        init();
     </script>
 </body>
-</html>
+    </html>
