@@ -311,9 +311,9 @@
                 <button class="btn-export" onclick="exportData()">📤 এক্সপোর্ট (JSON)</button>
                 <button class="btn-import" onclick="document.getElementById('import-file').click()">📥 ইমপোর্ট (JSON)</button>
                 <button class="btn-backup" onclick="createBackup()">💾 ব্যাকআপ সংরক্ষণ</button>
-                <button class="btn-restore" onclick="document.getElementById('restore-file').click()">🔄 ব্যাকআপ থেকে ফেরত</button>
+                <button class="btn-restore" onclick="restoreBackup()">🔄 ব্যাকআপ থেকে ফেরত</button>
                 <input type="file" id="import-file" accept=".json" onchange="importData(event)">
-                <input type="file" id="restore-file" accept=".json" onchange="restoreBackup(event)">
+                <input type="file" id="restore-file" accept=".json" onchange="restoreFromFile(event)">
             </div>
         </div>
 
@@ -342,7 +342,7 @@
     <script>
         // ---------- স্টেট ----------
         let customers = [];
-        let filteredIndexes = null; // সার্চ ফিল্টার ট্র্যাকিং
+        let isSearchActive = false; // সার্চ মোড ট্র্যাকিং
 
         const STORAGE_KEY = 'cosmeticsCustomers';
         const BACKUP_KEY = 'cosmeticsCustomersBackup';
@@ -401,51 +401,51 @@
             return div.innerHTML;
         }
 
-        // ---------- টেবিল রেন্ডার ----------
-        function updateTable() {
+        // ---------- টেবিল রেন্ডার (সংশোধিত) ----------
+        function renderTable(customersToShow, message) {
             const tableBody = document.getElementById('customer-table');
             const countEl = document.getElementById('customer-count');
             tableBody.innerHTML = '';
 
-            countEl.textContent = customers.length;
+            countEl.textContent = customersToShow.length;
 
-            if (customers.length === 0) {
+            if (customersToShow.length === 0) {
                 const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = '<td colspan="4" class="empty-message">কোন গ্রাহক নেই। নতুন গ্রাহক যোগ করুন।</td>';
+                emptyRow.innerHTML = `<td colspan="4" class="empty-message">${message || 'কোন গ্রাহক নেই। নতুন গ্রাহক যোগ করুন।'}</td>`;
                 tableBody.appendChild(emptyRow);
                 return;
             }
 
-            // Determine which indexes to show (filtered or all)
-            let indexesToShow = customers.map((_, i) => i);
-            if (filteredIndexes !== null && filteredIndexes.length > 0) {
-                indexesToShow = filteredIndexes;
-            } else if (filteredIndexes !== null && filteredIndexes.length === 0) {
-                // No matches from search
-                const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = '<td colspan="4" class="empty-message">🔍 কোন গ্রাহক খুঁজে পাওয়া যায়নি।</td>';
-                tableBody.appendChild(emptyRow);
-                return;
-            }
-
-            indexesToShow.forEach(index => {
-                const customer = customers[index];
-                if (!customer) return;
-
+            customersToShow.forEach(({ customer, originalIndex }) => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${escapeHtml(customer.name)}</td>
                     <td>${escapeHtml(customer.phone)}</td>
                     <td class="points-display">${customer.points}</td>
                     <td class="actions-cell">
-                        <button class="btn-action" onclick="addPointsPrompt(${index})">➕ যোগ</button>
-                        <button class="btn-action" onclick="deductPointsPrompt(${index})">➖ ডিডাক্ট</button>
-                        <button class="btn-action" onclick="editCustomerPrompt(${index})">✏️ এডিট</button>
-                        <button class="btn-danger btn-action" onclick="deleteCustomer(${index})">🗑️ ডিলিট</button>
+                        <button class="btn-action" onclick="addPointsPrompt(${originalIndex})">➕ যোগ</button>
+                        <button class="btn-action" onclick="deductPointsPrompt(${originalIndex})">➖ ডিডাক্ট</button>
+                        <button class="btn-action" onclick="editCustomerPrompt(${originalIndex})">✏️ এডিট</button>
+                        <button class="btn-danger btn-action" onclick="deleteCustomer(${originalIndex})">🗑️ ডিলিট</button>
                     </td>
                 `;
                 tableBody.appendChild(row);
             });
+        }
+
+        // ---------- টেবিল আপডেট (সম্পূর্ণ তালিকা) ----------
+        function updateTable() {
+            // সার্চ মোডে থাকলে সার্চ রেজাল্ট আবার দেখাও
+            if (isSearchActive) {
+                searchCustomer(true);
+                return;
+            }
+            
+            const allCustomers = customers.map((customer, index) => ({
+                customer: customer,
+                originalIndex: index
+            }));
+            renderTable(allCustomers);
         }
 
         // ---------- গ্রাহক যোগ ----------
@@ -476,7 +476,6 @@
                     customers[existingIndex].points += points;
                     saveCustomers();
                     clearSearch();
-                    updateTable();
                     showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে।`);
                 }
                 return;
@@ -494,7 +493,6 @@
 
             saveCustomers();
             clearSearch();
-            updateTable();
             showToast(`🌸 নতুন গ্রাহক "${name}" যোগ হয়েছে।`);
         }
 
@@ -519,7 +517,6 @@
 
             customers[index].points += points;
             saveCustomers();
-            clearSearch();
             updateTable();
             showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে।`);
         }
@@ -546,7 +543,6 @@
             if (customers[index].points >= points) {
                 customers[index].points -= points;
                 saveCustomers();
-                clearSearch();
                 updateTable();
                 showToast(`✅ ${points} পয়েন্ট ডিডাক্ট হয়েছে।`);
             } else {
@@ -597,7 +593,6 @@
             };
 
             saveCustomers();
-            clearSearch();
             updateTable();
             showToast('✏️ গ্রাহকের তথ্য আপডেট হয়েছে।');
         }
@@ -609,56 +604,69 @@
             if (confirm(`আপনি কি নিশ্চিত যে "${customer.name}" (${customer.phone}) কে ডিলিট করতে চান?`)) {
                 customers.splice(index, 1);
                 saveCustomers();
-                clearSearch();
-                updateTable();
+                // সার্চ অ্যাক্টিভ থাকলে রিসেট করো
+                if (isSearchActive) {
+                    clearSearch();
+                } else {
+                    updateTable();
+                }
                 showToast('🗑️ গ্রাহক ডিলিট হয়েছে।');
             }
         }
 
-        // ---------- সার্চ ----------
-        function searchCustomer() {
-            const query = document.getElementById('search-input').value.trim().toLowerCase();
+        // ---------- সার্চ (সম্পূর্ণ সংশোধিত) ----------
+        function searchCustomer(silent = false) {
+            const searchInput = document.getElementById('search-input');
+            const query = searchInput.value.trim().toLowerCase();
             const searchInfo = document.getElementById('search-info');
 
             if (!query) {
-                clearSearch();
-                showToast('⚠️ অনুগ্রহ করে কিছু লিখুন।');
+                if (!silent) showToast('⚠️ অনুগ্রহ করে কিছু লিখুন।');
                 return;
             }
 
-            const matches = customers
-                .map((customer, index) => ({ customer, index }))
-                .filter(({ customer }) =>
-                    customer.name.toLowerCase().includes(query) ||
-                    customer.phone.toLowerCase().includes(query)
-                );
+            // সার্চ ম্যাচ খোঁজা - নাম অথবা ফোন নম্বরে
+            const matchedItems = [];
+            customers.forEach((customer, index) => {
+                const nameMatch = customer.name.toLowerCase().includes(query);
+                const phoneMatch = customer.phone.toLowerCase().includes(query);
+                if (nameMatch || phoneMatch) {
+                    matchedItems.push({ customer, originalIndex: index });
+                }
+            });
 
-            filteredIndexes = matches.map(m => m.index);
+            isSearchActive = true;
 
-            if (matches.length === 0) {
+            if (matchedItems.length === 0) {
                 searchInfo.innerHTML = `
                     <div class="search-result-info" style="background:#ffebee; color:#b71c1c;">
-                        🔍 "${escapeHtml(query)}" এর জন্য কোন গ্রাহক পাওয়া যায়নি।
+                        🔍 "<strong>${escapeHtml(query)}</strong>" এর জন্য কোন গ্রাহক পাওয়া যায়নি।
                         <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
                     </div>
                 `;
+                renderTable([], `🔍 "${query}" এর জন্য কোন গ্রাহক পাওয়া যায়নি।`);
             } else {
                 searchInfo.innerHTML = `
                     <div class="search-result-info">
-                        🔍 "${escapeHtml(query)}" এর জন্য ${matches.length} জন গ্রাহক পাওয়া গেছে।
+                        🔍 "<strong>${escapeHtml(query)}</strong>" এর জন্য <strong>${matchedItems.length}</strong> জন গ্রাহক পাওয়া গেছে।
                         <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
                     </div>
                 `;
+                renderTable(matchedItems);
             }
-
-            updateTable();
         }
 
+        // ---------- সার্চ রিসেট ----------
         function clearSearch() {
             document.getElementById('search-input').value = '';
             document.getElementById('search-info').innerHTML = '';
-            filteredIndexes = null;
-            updateTable();
+            isSearchActive = false;
+            
+            const allCustomers = customers.map((customer, index) => ({
+                customer: customer,
+                originalIndex: index
+            }));
+            renderTable(allCustomers);
         }
 
         // ---------- এক্সপোর্ট ----------
@@ -741,7 +749,6 @@
                     customers = validData;
                     saveCustomers();
                     clearSearch();
-                    updateTable();
                     showToast(`✅ ${validData.length} টি রেকর্ড ইমপোর্ট সফল।`);
 
                 } catch (error) {
@@ -776,48 +783,12 @@
             }
         }
 
-        // ---------- ব্যাকআপ থেকে ফেরত ----------
-        function restoreBackup(event) {
-            const file = event.target.files[0];
-
-            // If file selected, restore from file
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    try {
-                        const backupData = JSON.parse(e.target.result);
-                        if (!Array.isArray(backupData)) {
-                            showToast('⚠️ ভুল ব্যাকআপ ফাইল!');
-                            event.target.value = '';
-                            return;
-                        }
-
-                        if (!confirm(`ব্যাকআপ ফাইলে ${backupData.length} টি রেকর্ড আছে।\nবর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবেন?`)) {
-                            event.target.value = '';
-                            return;
-                        }
-
-                        customers = backupData;
-                        saveCustomers();
-                        clearSearch();
-                        updateTable();
-                        showToast('🔄 ব্যাকআপ ফাইল থেকে ডেটা ফেরত এসেছে।');
-                    } catch (error) {
-                        console.error('রিস্টোর সমস্যা:', error);
-                        showToast('⚠️ ব্যাকআপ ফাইল পার্স করা যায়নি!');
-                    } finally {
-                        event.target.value = '';
-                    }
-                };
-                reader.readAsText(file);
-                return;
-            }
-
-            // Otherwise restore from localStorage backup
+        // ---------- লোকাল ব্যাকআপ থেকে ফেরত ----------
+        function restoreBackup() {
             try {
                 const storedBackup = localStorage.getItem(BACKUP_KEY);
                 if (!storedBackup) {
-                    // If no localStorage backup, prompt to select a file
+                    // যদি লোকাল ব্যাকআপ না থাকে, ফাইল সিলেক্ট করতে বলো
                     if (confirm('লোকাল স্টোরেজে কোন ব্যাকআপ নেই।\nআপনি কি একটি ব্যাকআপ ফাইল সিলেক্ট করতে চান?')) {
                         document.getElementById('restore-file').click();
                     }
@@ -837,13 +808,67 @@
                 customers = backupData;
                 saveCustomers();
                 clearSearch();
-                updateTable();
                 showToast('🔄 লোকাল ব্যাকআপ থেকে ডেটা ফেরত এসেছে।');
 
             } catch (error) {
                 console.error('রিস্টোর সমস্যা:', error);
                 showToast('⚠️ রিস্টোর করতে সমস্যা হয়েছে!');
             }
+        }
+
+        // ---------- ফাইল থেকে ব্যাকআপ ফেরত ----------
+        function restoreFromFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                try {
+                    const backupData = JSON.parse(e.target.result);
+                    if (!Array.isArray(backupData)) {
+                        showToast('⚠️ ভুল ব্যাকআপ ফাইল!');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    const validData = backupData.filter(item =>
+                        item && typeof item === 'object' &&
+                        typeof item.name === 'string' &&
+                        typeof item.phone === 'string' &&
+                        typeof item.points === 'number' && !isNaN(item.points)
+                    );
+
+                    if (validData.length === 0) {
+                        showToast('⚠️ ব্যাকআপ ফাইলে কোন বৈধ ডেটা নেই!');
+                        event.target.value = '';
+                        return;
+                    }
+
+                    if (!confirm(`ব্যাকআপ ফাইলে ${validData.length} টি রেকর্ড আছে।\nবর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবেন?`)) {
+                        event.target.value = '';
+                        return;
+                    }
+
+                    customers = validData;
+                    saveCustomers();
+                    clearSearch();
+                    showToast('🔄 ব্যাকআপ ফাইল থেকে ডেটা ফেরত এসেছে।');
+
+                } catch (error) {
+                    console.error('রিস্টোর সমস্যা:', error);
+                    showToast('⚠️ ব্যাকআপ ফাইল পার্স করা যায়নি!');
+                } finally {
+                    event.target.value = '';
+                }
+            };
+
+            reader.onerror = function() {
+                showToast('⚠️ ফাইল পড়তে সমস্যা!');
+                event.target.value = '';
+            };
+
+            reader.readAsText(file);
         }
 
         // ---------- এন্টার কী হ্যান্ডলিং ----------
@@ -864,10 +889,21 @@
             document.getElementById('cust-phone').addEventListener('keypress', handleEnterKey);
             document.getElementById('cust-points').addEventListener('keypress', handleEnterKey);
 
+            // সার্চ ফিল্ডে Enter চাপলে সার্চ হবে
             document.getElementById('search-input').addEventListener('keypress', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     searchCustomer();
+                }
+            });
+
+            // সার্চ ইনপুটে রিয়েল-টাইম সার্চ (ঐচ্ছিক)
+            document.getElementById('search-input').addEventListener('input', function() {
+                const query = this.value.trim();
+                if (query === '') {
+                    clearSearch();
+                } else {
+                    searchCustomer(true);
                 }
             });
         }
@@ -876,4 +912,4 @@
         init();
     </script>
 </body>
-    </html>
+</html>
