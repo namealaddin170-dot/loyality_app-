@@ -1,970 +1,518 @@
-Here is the complete, updated single-page HTML document for the cosmetic shop's loyalty point system. It now includes buttons to deduct points, delete customers, and export/import all data via JSON.
-
-```html
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Glow · Cosmetic Loyalty</title>
+    <title>কসমেটিক শপ লয়্যালটি পয়েন্ট সিস্টেম</title>
     <style>
+        :root {
+            --primary-bg: #f8e1e7;
+            --primary-color: #d81b60;
+            --secondary-color: #880e4f;
+            --accent-color: #ff80ab;
+            --text-color: #333;
+            --white: #ffffff;
+            --light-bg: #fff0f5;
+        }
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-
         body {
-            font-family: 'Segoe UI', Roboto, system-ui, -apple-system, sans-serif;
-            background: linear-gradient(145deg, #fbe9f0 0%, #f7e0ea 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 1.5rem;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
             margin: 0;
+            padding: 20px;
+            min-height: 100vh;
         }
-
-        .app-card {
-            max-width: 820px;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 2.5rem;
-            padding: 2rem 2.2rem 2.4rem;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(255, 240, 245, 0.6) inset;
-            border: 1px solid rgba(255, 255, 255, 0.7);
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-
         h1 {
-            font-size: 2.2rem;
-            font-weight: 600;
-            letter-spacing: -0.5px;
-            color: #4a2e3b;
-            display: flex;
-            align-items: center;
-            gap: 0.65rem;
-            margin-bottom: 0.25rem;
-        }
-
-        h1 span {
-            background: #fbc2d5;
-            font-size: 1.8rem;
-            padding: 0.3rem 0.7rem;
-            border-radius: 100px;
-            line-height: 1;
-        }
-
-        .subhead {
-            color: #a16b81;
-            font-weight: 400;
-            font-size: 0.95rem;
-            margin-left: 0.25rem;
-            margin-bottom: 1.8rem;
-            letter-spacing: 0.3px;
-            border-left: 3px solid #f7b0c6;
-            padding-left: 0.9rem;
-        }
-
-        .search-section {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
-            background: #fff8fa;
-            padding: 1.5rem 1.6rem;
-            border-radius: 2rem;
-            box-shadow: 0 4px 12px rgba(220, 150, 170, 0.15);
-            border: 1px solid #ffeef2;
-        }
-
-        .search-label {
-            font-weight: 500;
-            color: #6f4557;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .search-box {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .search-box input {
-            flex: 1;
-            min-width: 200px;
-            padding: 1rem 1.2rem;
-            border-radius: 60px;
-            border: 1.5px solid #f3cfdc;
-            background: white;
-            font-size: 1rem;
-            outline: none;
-            transition: all 0.2s ease;
-            color: #2e1b24;
-            font-weight: 500;
-            letter-spacing: 0.3px;
-        }
-
-        .search-box input:focus {
-            border-color: #e98fb0;
-            box-shadow: 0 0 0 4px rgba(233, 143, 176, 0.15);
-        }
-
-        .search-box input::placeholder {
-            color: #cdafbb;
-            font-weight: 400;
-            letter-spacing: 0.2px;
-        }
-
-        .search-btn {
-            background: #d46b8f;
-            border: none;
-            padding: 0 2rem;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 1rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.15s;
-            box-shadow: 0 10px 18px -8px rgba(190, 90, 130, 0.4);
-            letter-spacing: 0.3px;
-            border: 1px solid #ffffff50;
-            min-height: 56px;
-        }
-
-        .search-btn:hover {
-            background: #c0577b;
-            transform: scale(1.01);
-            box-shadow: 0 14px 22px -8px #c0577b90;
-        }
-
-        .search-btn:active {
-            transform: scale(0.98);
-            background: #b34a6d;
-        }
-
-        .result-area {
-            background: #ffffffd9;
-            border-radius: 1.8rem;
-            padding: 1.4rem 1.8rem;
-            margin-bottom: 2.2rem;
-            border: 1px solid #ffdae7;
-            box-shadow: 0 12px 28px -10px rgba(170, 100, 130, 0.2);
-            min-height: 100px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s ease;
-        }
-
-        .result-placeholder {
-            color: #b48b9b;
-            font-style: italic;
-            font-weight: 400;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1rem;
-        }
-
-        .customer-result {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .customer-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .customer-info {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .customer-phone {
-            font-weight: 600;
-            font-size: 1.2rem;
-            color: #2e1b24;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .customer-phone i {
-            font-style: normal;
-            background: #f5d3e0;
-            padding: 2px 10px;
-            border-radius: 30px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: #803f5a;
-        }
-
-        .points-badge {
-            background: linear-gradient(135deg, #ffeef4, #ffe2ec);
-            border-radius: 40px;
-            padding: 0.5rem 1.6rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border: 1px solid #f7b8cf;
-            box-shadow: 0 6px 12px -6px #e7a0b8;
-        }
-
-        .points-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #b34a6d;
-            line-height: 1;
-            letter-spacing: -0.5px;
-        }
-
-        .points-label {
-            color: #a15673;
-            font-weight: 500;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .action-row {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 0.6rem;
-            padding-top: 0.8rem;
-            border-top: 1px dashed #fbd0df;
-        }
-
-        .action-btn {
-            padding: 0.6rem 1.4rem;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            transition: 0.15s;
-            border: 1.5px solid transparent;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            letter-spacing: 0.2px;
-            background: white;
-            box-shadow: 0 4px 10px -6px rgba(0,0,0,0.1);
-        }
-
-        .deduct-btn {
-            background: #fde7f0;
-            border-color: #f5bfd4;
-            color: #9e405f;
-        }
-
-        .deduct-btn:hover {
-            background: #fbd8e6;
-            border-color: #ec9ebc;
-            color: #7c2e49;
-        }
-
-        .delete-btn {
-            background: #fce4e4;
-            border-color: #f7c1c1;
-            color: #a13e3e;
-        }
-
-        .delete-btn:hover {
-            background: #f9d1d1;
-            border-color: #ef9f9f;
-            color: #822c2c;
-        }
-
-        .not-found {
-            color: #a5496b;
-            background: #fff0f5;
-            padding: 0.8rem 1.2rem;
-            border-radius: 40px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px dashed #e6a2ba;
-            font-size: 0.95rem;
-        }
-
-        .add-customer-section {
-            background: #fffbfd;
-            border-radius: 2rem;
-            padding: 1.6rem 1.8rem;
-            border: 1px solid #fbdae7;
-            margin-top: 0.5rem;
-        }
-
-        .section-title {
-            font-weight: 500;
-            color: #6f4557;
-            font-size: 0.9rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .add-form {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            align-items: center;
-        }
-
-        .add-form input {
-            padding: 1rem 1.2rem;
-            border-radius: 60px;
-            border: 1.5px solid #f3cfdc;
-            background: white;
-            font-size: 0.95rem;
-            outline: none;
-            transition: all 0.2s ease;
-            flex: 1;
-            min-width: 150px;
-            color: #2e1b24;
-            font-weight: 500;
-        }
-
-        .add-form input:focus {
-            border-color: #e98fb0;
-            box-shadow: 0 0 0 4px rgba(233, 143, 176, 0.1);
-        }
-
-        .add-form input::placeholder {
-            color: #cdafbb;
-            font-weight: 400;
-        }
-
-        .add-btn {
-            background: #f7d0de;
-            border: 1px solid #f0b8cd;
-            padding: 0 2rem;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: #6b3b4e;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.15s;
-            min-height: 56px;
-            letter-spacing: 0.3px;
-            white-space: nowrap;
-        }
-
-        .add-btn:hover {
-            background: #fbc2d5;
-            border-color: #e89cb8;
-            color: #4d2838;
-            box-shadow: 0 8px 16px -8px #d48ba5;
-        }
-
-        .add-btn:active {
-            transform: scale(0.97);
-        }
-
-        .data-tools {
-            margin-top: 1.8rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #fbdae7;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            justify-content: center;
-        }
-
-        .tool-btn {
-            background: #f9eef3;
-            border: 1.5px solid #f3cfdc;
-            padding: 0.8rem 1.8rem;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: #6f4557;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            cursor: pointer;
-            transition: 0.15s;
-            letter-spacing: 0.2px;
-        }
-
-        .tool-btn:hover {
-            background: #fce4ec;
-            border-color: #eab0c6;
-            color: #4d2838;
-            box-shadow: 0 8px 16px -8px #d48ba5;
-        }
-
-        .tool-btn:active {
-            transform: scale(0.97);
-        }
-
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #2e1b24f2;
-            color: #ffeef4;
-            padding: 0.9rem 1.8rem;
-            border-radius: 60px;
-            font-weight: 500;
-            font-size: 0.95rem;
-            backdrop-filter: blur(8px);
-            box-shadow: 0 20px 35px -8px #3a1f2b;
-            transition: transform 0.25s ease, opacity 0.25s ease;
-            z-index: 999;
-            border: 1px solid #ffffff30;
-            letter-spacing: 0.2px;
-            pointer-events: none;
-            opacity: 0;
-            white-space: nowrap;
-            max-width: 90vw;
             text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
         }
-
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
-
-        .inline-icon {
-            font-size: 1.2rem;
-            filter: drop-shadow(0 2px 2px #ffc0d0);
+        input[type="text"], input[type="number"] {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 180px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s ease;
         }
-
-        @media (max-width: 550px) {
-            .app-card {
-                padding: 1.5rem 1.2rem;
+        input[type="text"]:focus, input[type="number"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
+        }
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.3s, transform 0.1s;
+            color: var(--white);
+            font-size: 0.95rem;
+        }
+        button:active {
+            transform: scale(0.97);
+        }
+        .btn-add {
+            background-color: var(--primary-color);
+        }
+        .btn-add:hover {
+            background-color: var(--secondary-color);
+        }
+        .btn-action {
+            background-color: var(--accent-color);
+            color: var(--secondary-color);
+            padding: 6px 12px;
+            font-size: 0.85em;
+            margin: 2px;
+            border-radius: 5px;
+            font-weight: 600;
+        }
+        .btn-action:hover {
+            background-color: #ff4081;
+            color: var(--white);
+        }
+        .btn-danger {
+            background-color: #e53935;
+            color: var(--white);
+        }
+        .btn-danger:hover {
+            background-color: #b71c1c;
+        }
+        .btn-export {
+            background-color: #2196f3;
+        }
+        .btn-export:hover {
+            background-color: #1976d2;
+        }
+        .btn-import {
+            background-color: #4caf50;
+        }
+        .btn-import:hover {
+            background-color: #388e3c;
+        }
+        .top-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .top-actions > div {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background-color: var(--light-bg);
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        tr:hover {
+            background-color: #fff8fa;
+        }
+        tr:last-child td {
+            border-bottom: none;
+        }
+        .actions-cell {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .empty-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #999;
+            font-style: italic;
+        }
+        .points-display {
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+        #import-file {
+            display: none;
+        }
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px 15px;
             }
             h1 {
-                font-size: 1.8rem;
+                font-size: 1.4rem;
             }
-            .search-btn {
-                padding: 0 1.3rem;
-            }
-            .points-badge {
-                padding: 0.4rem 1.2rem;
-            }
-            .points-number {
-                font-size: 1.6rem;
-            }
-            .action-btn {
-                font-size: 0.8rem;
-                padding: 0.5rem 1rem;
-            }
-            .toast {
-                white-space: normal;
+            th, td {
+                padding: 10px 8px;
                 font-size: 0.85rem;
+            }
+            .btn-action {
+                padding: 5px 8px;
+                font-size: 0.75em;
+            }
+            .top-actions > div {
+                width: 100%;
+            }
+            .top-actions button {
+                flex: 1;
             }
         }
     </style>
 </head>
 <body>
-    <div class="app-card">
-        <h1>
-            <span>✨</span> Glow · points
-        </h1>
-        <div class="subhead">cosmetic loyalty · by phone number</div>
+    <div class="container">
+        <h1>🎀 কসমেটিক শপ লয়্যালটি পয়েন্ট 🎀</h1>
 
-        <!-- SEARCH SECTION -->
-        <div class="search-section">
-            <div class="search-label">
-                <span class="inline-icon">🔍</span> retrieve customer points
-            </div>
-            <div class="search-box">
-                <input type="tel" id="searchPhoneInput" placeholder="e.g. 9876543210" autocomplete="off" inputmode="numeric">
-                <button class="search-btn" id="searchBtn">
-                    <span>🔎</span> Search
-                </button>
+        <!-- Add Customer Form -->
+        <div class="form-group">
+            <input type="text" id="cust-name" placeholder="গ্রাহকের নাম">
+            <input type="text" id="cust-phone" placeholder="ফোন নম্বর">
+            <input type="number" id="cust-points" placeholder="পয়েন্ট" min="0">
+            <button class="btn-add" onclick="addCustomer()">গ্রাহক যোগ করুন</button>
+        </div>
+
+        <!-- Data Tools -->
+        <div class="top-actions">
+            <div>
+                <button class="btn-export" onclick="exportData()">📤 এক্সপোর্ট ডেটা (JSON)</button>
+                <button class="btn-import" onclick="document.getElementById('import-file').click()">📥 ইমপোর্ট ডেটা (JSON)</button>
+                <input type="file" id="import-file" accept=".json" onchange="importData(event)">
             </div>
         </div>
 
-        <!-- RESULT AREA (dynamic) -->
-        <div class="result-area" id="resultArea">
-            <div class="result-placeholder">
-                <span>💄</span> Enter a phone number to see points
-            </div>
-        </div>
-
-        <!-- ADD / UPDATE CUSTOMER SECTION -->
-        <div class="add-customer-section">
-            <div class="section-title">
-                <span>➕</span> add / update points
-            </div>
-            <div class="add-form">
-                <input type="tel" id="addPhoneInput" placeholder="phone number" autocomplete="off" inputmode="numeric">
-                <input type="number" id="addPointsInput" placeholder="points (e.g. 100)" min="0" step="1" value="50">
-                <button class="add-btn" id="addBtn">
-                    <span>🌸</span> Save
-                </button>
-            </div>
-
-            <!-- DATA TOOLS: EXPORT / IMPORT -->
-            <div class="data-tools">
-                <button class="tool-btn" id="exportBtn">
-                    <span>📤</span> Export Data
-                </button>
-                <button class="tool-btn" id="importBtn">
-                    <span>📥</span> Import Data
-                </button>
-                <input type="file" id="importFileInput" accept=".json,application/json" style="display: none;">
-            </div>
-        </div>
+        <!-- Customer Table -->
+        <table>
+            <thead>
+                <tr>
+                    <th>নাম</th>
+                    <th>ফোন নম্বর</th>
+                    <th>বর্তমান পয়েন্ট</th>
+                    <th>অ্যাকশন</th>
+                </tr>
+            </thead>
+            <tbody id="customer-table">
+                <!-- গ্রাহকের ডেটা এখানে দেখা যাবে -->
+            </tbody>
+        </table>
     </div>
 
-    <!-- Toast notification -->
-    <div class="toast" id="toast"></div>
-
     <script>
-        (function() {
-            // ---------- STORAGE KEY ----------
-            const STORAGE_KEY = 'glow_loyalty_points_v1';
+        // ---------- STATE ----------
+        let customers = [];
 
-            // ---------- DOM refs ----------
-            const searchPhoneInput = document.getElementById('searchPhoneInput');
-            const searchBtn = document.getElementById('searchBtn');
-            const resultArea = document.getElementById('resultArea');
-            const addPhoneInput = document.getElementById('addPhoneInput');
-            const addPointsInput = document.getElementById('addPointsInput');
-            const addBtn = document.getElementById('addBtn');
-            const toastEl = document.getElementById('toast');
-            const exportBtn = document.getElementById('exportBtn');
-            const importBtn = document.getElementById('importBtn');
-            const importFileInput = document.getElementById('importFileInput');
-
-            // Track the currently displayed phone number in the result area
-            let currentDisplayedPhone = null;
-
-            // ---------- UTILITIES ----------
-
-            function loadPointsData() {
-                try {
-                    const raw = localStorage.getItem(STORAGE_KEY);
-                    if (!raw) return {};
-                    const parsed = JSON.parse(raw);
-                    if (typeof parsed === 'object' && parsed !== null && !Array.isArray(parsed)) {
-                        const clean = {};
-                        for (const [k, v] of Object.entries(parsed)) {
-                            if (typeof k === 'string' && typeof v === 'number' && !isNaN(v) && v >= 0) {
-                                clean[k] = Math.floor(v);
-                            }
-                        }
-                        return clean;
+        // ---------- LOAD DATA ----------
+        function loadCustomers() {
+            try {
+                const stored = localStorage.getItem('cosmeticsCustomers');
+                if (stored) {
+                    const parsed = JSON.parse(stored);
+                    if (Array.isArray(parsed)) {
+                        customers = parsed;
+                    } else {
+                        customers = [];
                     }
-                    return {};
-                } catch (e) {
-                    console.warn('Failed to load points data, resetting.');
-                    return {};
+                } else {
+                    customers = [];
                 }
+            } catch (error) {
+                console.error('ডেটা লোড করতে সমস্যা:', error);
+                customers = [];
+            }
+        }
+
+        // ---------- SAVE DATA ----------
+        function saveCustomers() {
+            try {
+                localStorage.setItem('cosmeticsCustomers', JSON.stringify(customers));
+            } catch (error) {
+                console.error('ডেটা সেভ করতে সমস্যা:', error);
+                alert('ডেটা সেভ করতে সমস্যা হয়েছে!');
+            }
+        }
+
+        // ---------- RENDER TABLE ----------
+        function updateTable() {
+            const tableBody = document.getElementById('customer-table');
+            tableBody.innerHTML = '';
+
+            if (customers.length === 0) {
+                const emptyRow = document.createElement('tr');
+                emptyRow.innerHTML = '<td colspan="4" class="empty-message">কোন গ্রাহক নেই। নতুন গ্রাহক যোগ করুন।</td>';
+                tableBody.appendChild(emptyRow);
+                saveCustomers();
+                return;
             }
 
-            function savePointsData(data) {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-                } catch (e) {
-                    showToast('⚠️ Could not save to storage');
-                }
-            }
-
-            function normalizePhone(phone) {
-                if (!phone) return '';
-                return phone.replace(/\D/g, '');
-            }
-
-            let toastTimer = null;
-            function showToast(message, duration = 2400) {
-                toastEl.textContent = message;
-                toastEl.classList.add('show');
-                if (toastTimer) clearTimeout(toastTimer);
-                toastTimer = setTimeout(() => {
-                    toastEl.classList.remove('show');
-                }, duration);
-            }
-
-            // ---------- RENDER RESULT ----------
-            function renderResult(phone, points) {
-                currentDisplayedPhone = phone;
-
-                if (points === undefined || points === null) {
-                    resultArea.innerHTML = `
-                        <div class="not-found">
-                            <span>🔍</span> No record for +${phone} — add points below
-                        </div>
-                    `;
-                    return;
-                }
-
-                const formattedPoints = points.toLocaleString();
-                resultArea.innerHTML = `
-                    <div class="customer-result">
-                        <div class="customer-header">
-                            <div class="customer-info">
-                                <div class="customer-phone">
-                                    <span>📞</span> ${phone} <i>loyalty</i>
-                                </div>
-                            </div>
-                            <div class="points-badge">
-                                <span class="points-number">${formattedPoints}</span>
-                                <span class="points-label">points</span>
-                            </div>
-                        </div>
-                        <div class="action-row">
-                            <button class="action-btn deduct-btn" data-phone="${phone}" data-action="deduct">
-                                <span>➖</span> Deduct Points
-                            </button>
-                            <button class="action-btn delete-btn" data-phone="${phone}" data-action="delete">
-                                <span>🗑️</span> Delete Customer
-                            </button>
-                        </div>
-                    </div>
+            customers.forEach((customer, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${escapeHtml(customer.name)}</td>
+                    <td>${escapeHtml(customer.phone)}</td>
+                    <td class="points-display">${customer.points}</td>
+                    <td class="actions-cell">
+                        <button class="btn-action" onclick="addPointsPrompt(${index})">➕ পয়েন্ট যোগ</button>
+                        <button class="btn-action" onclick="deductPointsPrompt(${index})">➖ পয়েন্ট ডিডাক্ট</button>
+                        <button class="btn-danger btn-action" onclick="deleteCustomer(${index})">🗑️ ডিলিট</button>
+                    </td>
                 `;
+                tableBody.appendChild(row);
+            });
 
-                // Attach listeners to the dynamically created buttons
-                const deductBtn = resultArea.querySelector('[data-action="deduct"]');
-                const deleteBtn = resultArea.querySelector('[data-action="delete"]');
+            saveCustomers();
+        }
 
-                if (deductBtn) deductBtn.addEventListener('click', () => handleDeduct(phone));
-                if (deleteBtn) deleteBtn.addEventListener('click', () => handleDelete(phone));
+        // ---------- ESCAPE HTML (XSS protection) ----------
+        function escapeHtml(text) {
+            if (!text && text !== 0) return '';
+            const div = document.createElement('div');
+            div.textContent = String(text);
+            return div.innerHTML;
+        }
+
+        // ---------- ADD CUSTOMER ----------
+        function addCustomer() {
+            const nameInput = document.getElementById('cust-name');
+            const phoneInput = document.getElementById('cust-phone');
+            const pointsInput = document.getElementById('cust-points');
+
+            const name = nameInput.value.trim();
+            const phone = phoneInput.value.trim();
+            const points = parseInt(pointsInput.value) || 0;
+
+            if (!name || !phone) {
+                alert('অনুগ্রহ করে নাম এবং ফোন নম্বর লিখুন।');
+                return;
             }
 
-            function renderPlaceholder() {
-                currentDisplayedPhone = null;
-                resultArea.innerHTML = `
-                    <div class="result-placeholder">
-                        <span>💄</span> Enter a phone number to see points
-                    </div>
-                `;
+            if (points < 0) {
+                alert('পয়েন্ট ঋণাত্মক হতে পারে না।');
+                return;
             }
 
-            // ---------- SEARCH HANDLER ----------
-            function handleSearch() {
-                const rawInput = searchPhoneInput.value.trim();
-                const phone = normalizePhone(rawInput);
-
-                if (!phone) {
-                    resultArea.innerHTML = `
-                        <div class="not-found">
-                            <span>⚠️</span> Please enter a valid phone number (digits only)
-                        </div>
-                    `;
-                    currentDisplayedPhone = null;
-                    showToast('📱 Enter a phone number');
-                    return;
+            // Check for duplicate phone number
+            const existingIndex = customers.findIndex(c => c.phone === phone);
+            if (existingIndex !== -1) {
+                const confirmUpdate = confirm(`এই ফোন নম্বর (${phone}) ইতিমধ্যে ${customers[existingIndex].name} নামে নিবন্ধিত।\nআপনি কি পয়েন্ট যোগ করতে চান?`);
+                if (confirmUpdate) {
+                    customers[existingIndex].points += points;
+                    updateTable();
+                    nameInput.value = '';
+                    phoneInput.value = '';
+                    pointsInput.value = '';
                 }
-
-                const data = loadPointsData();
-                const points = data[phone];
-
-                if (points !== undefined) {
-                    renderResult(phone, points);
-                } else {
-                    renderResult(phone, undefined);
-                }
+                return;
             }
 
-            // ---------- ADD / UPDATE HANDLER ----------
-            function handleAddOrUpdate() {
-                const rawPhone = addPhoneInput.value.trim();
-                const phone = normalizePhone(rawPhone);
+            const newCustomer = {
+                name: name,
+                phone: phone,
+                points: points
+            };
 
-                if (!phone) {
-                    showToast('📱 Please enter a phone number');
-                    addPhoneInput.focus();
-                    return;
-                }
+            customers.push(newCustomer);
+            nameInput.value = '';
+            phoneInput.value = '';
+            pointsInput.value = '';
+            updateTable();
+        }
 
-                const pointsRaw = addPointsInput.value.trim();
-                let points = parseInt(pointsRaw, 10);
+        // ---------- ADD POINTS ----------
+        function addPointsPrompt(index) {
+            if (index < 0 || index >= customers.length) return;
 
-                if (isNaN(points) || points < 0) {
-                    showToast('🔢 Enter a valid positive number for points');
-                    addPointsInput.focus();
-                    return;
-                }
+            const customer = customers[index];
+            const pointsToAdd = prompt(`${customer.name} (${customer.phone}) কে কত পয়েন্ট যোগ করতে চান?`, '10');
 
-                if (points > 1000000) points = 1000000;
+            if (pointsToAdd === null) return; // Cancelled
 
-                const data = loadPointsData();
-                const isUpdate = data[phone] !== undefined;
-                const oldPoints = data[phone] || 0;
-
-                let newPoints;
-                if (isUpdate) {
-                    newPoints = oldPoints + points;
-                } else {
-                    newPoints = points;
-                }
-
-                if (newPoints > 10000000) newPoints = 10000000;
-
-                data[phone] = newPoints;
-                savePointsData(data);
-
-                if (isUpdate) {
-                    showToast(`✨ +${points} points added · ${phone} now has ${newPoints} pts`);
-                } else {
-                    showToast(`🌸 New customer ${phone} with ${newPoints} points`);
-                }
-
-                addPhoneInput.value = '';
-                addPointsInput.value = '50';
-
-                // Refresh result if the same phone is currently displayed
-                if (currentDisplayedPhone === phone) {
-                    renderResult(phone, newPoints);
-                }
-
-                addPhoneInput.focus();
+            const trimmed = pointsToAdd.trim();
+            if (trimmed === '' || isNaN(trimmed)) {
+                alert('অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
+                return;
             }
 
-            // ---------- DEDUCT POINTS ----------
-            function handleDeduct(phone) {
-                const data = loadPointsData();
-                const currentPoints = data[phone];
-
-                if (currentPoints === undefined) {
-                    showToast('⚠️ Customer not found');
-                    renderPlaceholder();
-                    return;
-                }
-
-                const input = prompt(`Current points for ${phone}: ${currentPoints}\nEnter points to deduct:`, '10');
-
-                if (input === null) return; // cancelled
-
-                const deductAmount = parseInt(input, 10);
-
-                if (isNaN(deductAmount) || deductAmount <= 0) {
-                    showToast('🔢 Please enter a valid positive number');
-                    return;
-                }
-
-                if (deductAmount > currentPoints) {
-                    showToast(`⚠️ Cannot deduct more than ${currentPoints} points`);
-                    return;
-                }
-
-                const newPoints = currentPoints - deductAmount;
-
-                if (newPoints === 0) {
-                    // Optionally, keep the customer with 0 points or delete.
-                    // We'll keep with 0 points for simplicity.
-                }
-
-                data[phone] = newPoints;
-                savePointsData(data);
-
-                showToast(`➖ ${deductAmount} points deducted · ${phone} now has ${newPoints} pts`);
-
-                // Refresh result
-                if (currentDisplayedPhone === phone) {
-                    renderResult(phone, newPoints);
-                }
+            const points = parseInt(trimmed);
+            if (points <= 0) {
+                alert('পয়েন্ট ধনাত্মক হতে হবে।');
+                return;
             }
 
-            // ---------- DELETE CUSTOMER ----------
-            function handleDelete(phone) {
-                const data = loadPointsData();
-                const currentPoints = data[phone];
+            customers[index].points += points;
+            updateTable();
+        }
 
-                if (currentPoints === undefined) {
-                    showToast('⚠️ Customer not found');
-                    renderPlaceholder();
-                    return;
-                }
+        // ---------- DEDUCT POINTS ----------
+        function deductPointsPrompt(index) {
+            if (index < 0 || index >= customers.length) return;
 
-                const confirmDelete = confirm(`Delete customer ${phone} with ${currentPoints} points?\nThis cannot be undone.`);
+            const customer = customers[index];
+            const pointsToDeduct = prompt(`${customer.name} (${customer.phone}) থেকে কত পয়েন্ট ডিডাক্ট করতে চান?\nবর্তমান পয়েন্ট: ${customer.points}`, '10');
 
-                if (!confirmDelete) return;
+            if (pointsToDeduct === null) return; // Cancelled
 
-                delete data[phone];
-                savePointsData(data);
-
-                showToast(`🗑️ Customer ${phone} deleted`);
-
-                // Clear the result area if the deleted customer was displayed
-                if (currentDisplayedPhone === phone) {
-                    renderPlaceholder();
-                    // Also clear search field to avoid confusion
-                    searchPhoneInput.value = '';
-                }
+            const trimmed = pointsToDeduct.trim();
+            if (trimmed === '' || isNaN(trimmed)) {
+                alert('অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
+                return;
             }
 
-            // ---------- EXPORT DATA ----------
-            function handleExport() {
-                const data = loadPointsData();
-                const jsonString = JSON.stringify(data, null, 2);
-                const blob = new Blob([jsonString], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
+            const points = parseInt(trimmed);
+            if (points <= 0) {
+                alert('পয়েন্ট ধনাত্মক হতে হবে।');
+                return;
+            }
+
+            if (customers[index].points >= points) {
+                customers[index].points -= points;
+                updateTable();
+            } else {
+                alert(`পর্যাপ্ত পয়েন্ট নেই! বর্তমান পয়েন্ট: ${customers[index].points}`);
+            }
+        }
+
+        // ---------- DELETE CUSTOMER ----------
+        function deleteCustomer(index) {
+            if (index < 0 || index >= customers.length) return;
+
+            const customer = customers[index];
+            if (confirm(`আপনি কি নিশ্চিত যে "${customer.name}" (${customer.phone}) কে ডিলিট করতে চান?`)) {
+                customers.splice(index, 1);
+                updateTable();
+            }
+        }
+
+        // ---------- EXPORT DATA ----------
+        function exportData() {
+            if (customers.length === 0) {
+                alert('এক্সপোর্ট করার জন্য কোন ডেটা নেই।');
+                return;
+            }
+
+            try {
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(customers, null, 2));
+                const downloadAnchorNode = document.createElement('a');
                 const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-                a.href = url;
-                a.download = `glow-loyalty-backup-${timestamp}.json`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showToast('📤 Data exported successfully');
+                downloadAnchorNode.setAttribute("href", dataStr);
+                downloadAnchorNode.setAttribute("download", `customer_loyalty_data_${timestamp}.json`);
+                document.body.appendChild(downloadAnchorNode);
+                downloadAnchorNode.click();
+                downloadAnchorNode.remove();
+            } catch (error) {
+                console.error('এক্সপোর্ট সমস্যা:', error);
+                alert('ডেটা এক্সপোর্ট করতে সমস্যা হয়েছে!');
             }
+        }
 
-            // ---------- IMPORT DATA ----------
-            function handleImportFile(event) {
-                const file = event.target.files[0];
-                if (!file) return;
+        // ---------- IMPORT DATA ----------
+        function importData(event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-                const reader = new FileReader();
+            const reader = new FileReader();
 
-                reader.onload = function(e) {
-                    try {
-                        const importedData = JSON.parse(e.target.result);
+            reader.onload = function(e) {
+                try {
+                    const importedData = JSON.parse(e.target.result);
 
-                        if (typeof importedData !== 'object' || importedData === null || Array.isArray(importedData)) {
-                            throw new Error('Invalid format: expected a JSON object');
-                        }
-
-                        // Validate and clean imported data
-                        const cleanData = {};
-                        let invalidCount = 0;
-
-                        for (const [key, value] of Object.entries(importedData)) {
-                            const normalizedKey = normalizePhone(key);
-                            if (!normalizedKey) {
-                                invalidCount++;
-                                continue;
-                            }
-                            if (typeof value === 'number' && !isNaN(value) && value >= 0) {
-                                cleanData[normalizedKey] = Math.floor(value);
-                            } else {
-                                invalidCount++;
-                            }
-                        }
-
-                        if (Object.keys(cleanData).length === 0) {
-                            throw new Error('No valid customer records found in file');
-                        }
-
-                        // Ask for confirmation before overwriting
-                        const currentData = loadPointsData();
-                        const currentCount = Object.keys(currentData).length;
-
-                        const confirmImport = confirm(
-                            `Import ${Object.keys(cleanData).length} customer records?\n\n` +
-                            `This will REPLACE all existing data (${currentCount} records).\n` +
-                            (invalidCount > 0 ? `\n(${invalidCount} invalid entries were skipped)` : '')
-                        );
-
-                        if (!confirmImport) {
-                            // Reset file input
-                            importFileInput.value = '';
-                            return;
-                        }
-
-                        savePointsData(cleanData);
-                        showToast(`📥 Imported ${Object.keys(cleanData).length} records successfully`);
-
-                        // Reset UI
-                        renderPlaceholder();
-                        searchPhoneInput.value = '';
-
-                    } catch (err) {
-                        console.error('Import error:', err);
-                        showToast(`⚠️ Import failed: ${err.message}`);
-                    } finally {
-                        // Reset file input so the same file can be re-selected
-                        importFileInput.value = '';
+                    if (!Array.isArray(importedData)) {
+                        alert("ভুল ফাইল ফরম্যাট! একটি JSON অ্যারে প্রত্যাশিত।");
+                        return;
                     }
-                };
 
-                reader.onerror = function() {
-                    showToast('⚠️ Error reading file');
-                    importFileInput.value = '';
-                };
+                    // Validate each item
+                    const validData = [];
+                    let invalidCount = 0;
 
-                reader.readAsText(file);
-            }
+                    for (const item of importedData) {
+                        if (item && typeof item === 'object' &&
+                            typeof item.name === 'string' &&
+                            typeof item.phone === 'string' &&
+                            typeof item.points === 'number' &&
+                            !isNaN(item.points) && item.points >= 0) {
+                            validData.push({
+                                name: item.name.trim(),
+                                phone: item.phone.trim(),
+                                points: Math.floor(item.points)
+                            });
+                        } else {
+                            invalidCount++;
+                        }
+                    }
 
-            // ---------- INITIAL SETUP ----------
-            function init() {
-                addPointsInput.value = '50';
+                    if (validData.length === 0) {
+                        alert("ফাইলে কোন বৈধ গ্রাহক ডেটা পাওয়া যায়নি!");
+                        return;
+                    }
 
-                // Seed demo data if empty
-                const data = loadPointsData();
-                if (Object.keys(data).length === 0) {
-                    const demoData = {
-                        '9876543210': 245,
-                        '5551234567': 80,
-                        '1112223333': 1200,
-                    };
-                    savePointsData(demoData);
-                    searchPhoneInput.placeholder = 'try 9876543210';
+                    const confirmImport = confirm(
+                        `${validData.length} টি গ্রাহক রেকর্ড ইমপোর্ট করা হবে।\n` +
+                        `এটি বর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবে।\n` +
+                        (invalidCount > 0 ? `\n(${invalidCount} টি অবৈধ এন্ট্রি বাদ দেওয়া হয়েছে)` : '') +
+                        `\n\nআপনি কি চালিয়ে যেতে চান?`
+                    );
+
+                    if (!confirmImport) {
+                        event.target.value = '';
+                        return;
+                    }
+
+                    customers = validData;
+                    updateTable();
+                    alert(`✅ ${validData.length} টি রেকর্ড সফলভাবে ইমপোর্ট হয়েছে!`);
+
+                } catch (error) {
+                    console.error('ইমপোর্ট সমস্যা:', error);
+                    alert("JSON ফাইল পার্স করতে সমস্যা হয়েছে! ফাইলটি বৈধ কিনা তা পরীক্ষা করুন।");
+                } finally {
+                    event.target.value = '';
                 }
+            };
 
-                renderPlaceholder();
+            reader.onerror = function() {
+                alert("ফাইল পড়তে সমস্যা হয়েছে!");
+                event.target.value = '';
+            };
 
-                // Event listeners
-                searchBtn.addEventListener('click', handleSearch);
-                addBtn.addEventListener('click', handleAddOrUpdate);
-                exportBtn.addEventListener('click', handleExport);
-                importBtn.addEventListener('click', () => importFileInput.click());
-                importFileInput.addEventListener('change', handleImportFile);
+            reader.readAsText(file);
+        }
 
-                searchPhoneInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleSearch();
-                    }
-                });
-
-                addPhoneInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleAddOrUpdate();
-                    }
-                });
-
-                addPointsInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        handleAddOrUpdate();
-                    }
-                });
-            }
-
-            init();
-        })();
+        // ---------- INITIALIZE ----------
+        loadCustomers();
+        updateTable();
     </script>
 </body>
 </html>
-```
-
-Core Features and How to Use Them
-
-You can manage your customer loyalty program with these key actions.
-
-· Search & View Points: Enter a phone number in the search field to see a customer's current points. The result area will display their balance or a message if they're not found.
-· Add or Update Points: Use the form below the search to add points. If the phone number is new, it creates a record. If it exists, it adds to their total.
-· Deduct or Delete: When a customer is displayed, you'll see two new buttons. Use Deduct Points to subtract a specific amount, or Delete Customer to remove the record entirely after confirmation.
-· Backup & Restore: The Export Data and Import Data buttons let you save all customer data to a JSON file or restore it from a previous backup.
