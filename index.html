@@ -1,915 +1,1630 @@
 <!DOCTYPE html>
 <html lang="bn">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>কসমেটিক শপ লয়্যালটি পয়েন্ট সিস্টেম</title>
-    <style>
-        :root {
-            --primary-bg: #f8e1e7;
-            --primary-color: #d81b60;
-            --secondary-color: #880e4f;
-            --accent-color: #ff80ab;
-            --text-color: #333;
-            --white: #ffffff;
-            --light-bg: #fff0f5;
-            --success: #4caf50;
-            --info: #2196f3;
-            --danger: #e53935;
-            --warning: #ff9800;
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--primary-bg);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: var(--white);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        h1 {
-            text-align: center;
-            color: var(--secondary-color);
-            margin-bottom: 30px;
-            font-size: 1.8rem;
-        }
-        .section {
-            margin-bottom: 25px;
-            padding: 20px;
-            background: var(--light-bg);
-            border-radius: 12px;
-            border: 1px solid #fce4ec;
-        }
-        .section-title {
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--secondary-color);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .form-group {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-        input[type="text"], input[type="number"], input[type="tel"] {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            flex: 1;
-            min-width: 160px;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.2s ease, box-shadow 0.2s ease;
-            background: var(--white);
-        }
-        input:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1);
-        }
-        button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.3s, transform 0.1s;
-            color: var(--white);
-            font-size: 0.95rem;
-            white-space: nowrap;
-        }
-        button:active {
-            transform: scale(0.97);
-        }
-        .btn-add {
-            background-color: var(--primary-color);
-        }
-        .btn-add:hover {
-            background-color: var(--secondary-color);
-        }
-        .btn-search {
-            background-color: var(--info);
-        }
-        .btn-search:hover {
-            background-color: #1976d2;
-        }
-        .btn-clear {
-            background-color: #9e9e9e;
-        }
-        .btn-clear:hover {
-            background-color: #757575;
-        }
-        .btn-action {
-            background-color: var(--accent-color);
-            color: var(--secondary-color);
-            padding: 6px 12px;
-            font-size: 0.82em;
-            margin: 2px;
-            border-radius: 5px;
-            font-weight: 600;
-        }
-        .btn-action:hover {
-            background-color: #ff4081;
-            color: var(--white);
-        }
-        .btn-danger {
-            background-color: var(--danger);
-            color: var(--white);
-        }
-        .btn-danger:hover {
-            background-color: #b71c1c;
-        }
-        .btn-export {
-            background-color: var(--info);
-        }
-        .btn-export:hover {
-            background-color: #1976d2;
-        }
-        .btn-import {
-            background-color: var(--success);
-        }
-        .btn-import:hover {
-            background-color: #388e3c;
-        }
-        .btn-backup {
-            background-color: var(--warning);
-        }
-        .btn-backup:hover {
-            background-color: #f57c00;
-        }
-        .btn-restore {
-            background-color: #9c27b0;
-        }
-        .btn-restore:hover {
-            background-color: #7b1fa2;
-        }
-        .top-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .top-actions button {
-            flex: 1;
-            min-width: 140px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
-        th, td {
-            padding: 14px 12px;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-        th {
-            background-color: var(--light-bg);
-            color: var(--secondary-color);
-            font-weight: 700;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        tr:hover {
-            background-color: #fff8fa;
-        }
-        tr:last-child td {
-            border-bottom: none;
-        }
-        .actions-cell {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-        .empty-message {
-            text-align: center;
-            padding: 40px 20px;
-            color: #999;
-            font-style: italic;
-        }
-        .points-display {
-            font-weight: 700;
-            color: var(--secondary-color);
-            font-size: 1.1rem;
-        }
-        .search-result-info {
-            padding: 10px 15px;
-            background: #e3f2fd;
-            color: #0d47a1;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-weight: 600;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .search-result-info button {
-            padding: 6px 14px;
-            font-size: 0.85rem;
-        }
-        #import-file, #restore-file {
-            display: none;
-        }
-        .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%) translateY(100px);
-            background: #2e1b24f2;
-            color: #ffeef4;
-            padding: 12px 24px;
-            border-radius: 60px;
-            font-weight: 600;
-            box-shadow: 0 20px 35px -8px #3a1f2b;
-            transition: transform 0.25s ease, opacity 0.25s ease;
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            max-width: 90vw;
-            text-align: center;
-            font-size: 0.95rem;
-        }
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-        @media (max-width: 600px) {
-            .container {
-                padding: 20px 15px;
-            }
-            h1 {
-                font-size: 1.3rem;
-            }
-            th, td {
-                padding: 10px 6px;
-                font-size: 0.8rem;
-            }
-            .btn-action {
-                padding: 5px 8px;
-                font-size: 0.72em;
-            }
-            .top-actions button {
-                flex: 1 1 100%;
-            }
-            .section {
-                padding: 15px;
-            }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>কসমেটিক শপ লয়্যালটি পয়েন্ট সিস্টেম</title>
+<style>
+:root {
+    --primary-bg: #f8e1e7;
+    --primary-color: #d81b60;
+    --secondary-color: #880e4f;
+    --accent-color: #ff80ab;
+    --text-color: #333;
+    --white: #ffffff;
+    --light-bg: #fff0f5;
+    --success: #4caf50;
+    --info: #2196f3;
+    --danger: #e53935;
+    --warning: #ff9800;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --platinum: #e5e4e2;
+    --card-bg: #ffffff;
+    --border-color: #fce4ec;
+    --shadow: rgba(0, 0, 0, 0.1);
+}
+body.dark-mode {
+    --primary-bg: #1a1a2e;
+    --primary-color: #ff4081;
+    --secondary-color: #ff80ab;
+    --accent-color: #d81b60;
+    --text-color: #e0e0e0;
+    --white: #16213e;
+    --light-bg: #0f3460;
+    --card-bg: #16213e;
+    --border-color: #1a1a2e;
+    --shadow: rgba(0, 0, 0, 0.4);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--primary-bg) 0%, var(--light-bg) 100%);
+    background-attachment: fixed;
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    transition: background 0.5s ease, color 0.3s ease;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px var(--shadow);
+    animation: containerFadeIn 0.6s ease;
+    transition: background 0.3s ease;
+}
+@keyframes containerFadeIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+h1 {
+    text-align: center;
+    color: var(--secondary-color);
+    font-size: 1.8rem;
+    flex: 1;
+    animation: titleGlow 3s ease-in-out infinite alternate;
+}
+@keyframes titleGlow {
+    from { text-shadow: 0 0 5px rgba(216, 27, 96, 0.2); }
+    to { text-shadow: 0 0 20px rgba(216, 27, 96, 0.5); }
+}
+.header-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.icon-btn {
+    width: 45px; height: 45px;
+    border-radius: 50%;
+    border: none;
+    background: var(--light-bg);
+    color: var(--secondary-color);
+    cursor: pointer;
+    font-size: 1.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px var(--shadow);
+}
+.icon-btn:hover {
+    background: var(--primary-color);
+    color: white;
+    transform: translateY(-3px) rotate(10deg);
+    box-shadow: 0 6px 15px rgba(216, 27, 96, 0.4);
+}
+.lang-toggle {
+    padding: 8px 14px;
+    border-radius: 20px;
+    background: var(--light-bg);
+    border: 2px solid var(--primary-color);
+    color: var(--secondary-color);
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.85rem;
+}
+.lang-toggle:hover { background: var(--primary-color); color: white; }
+
+/* Navigation Tabs */
+.tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 12px;
+}
+.tab-btn {
+    padding: 12px 20px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+.tab-btn::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 3px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+.tab-btn:hover { background: var(--light-bg); transform: translateY(-2px); }
+.tab-btn.active {
+    background: var(--primary-color);
+    color: white;
+    box-shadow: 0 6px 20px rgba(216, 27, 96, 0.4);
+    animation: tabPop 0.4s ease;
+}
+@keyframes tabPop {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+.tab-content { display: none; animation: fadeSlideIn 0.5s ease; }
+.tab-content.active { display: block; }
+@keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateX(20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+
+.section {
+    margin-bottom: 25px;
+    padding: 22px;
+    background: var(--light-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+    animation: sectionAppear 0.5s ease backwards;
+}
+.section:hover { box-shadow: 0 8px 25px var(--shadow); transform: translateY(-2px); }
+@keyframes sectionAppear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.section-title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.form-group { display: flex; gap: 10px; flex-wrap: wrap; }
+input, select, textarea {
+    padding: 12px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    flex: 1;
+    min-width: 140px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+    background: var(--white);
+    color: var(--text-color);
+    font-family: inherit;
+}
+input:focus, select:focus, textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.15);
+    transform: translateY(-2px);
+}
+button {
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    color: var(--white);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    position: relative;
+    overflow: hidden;
+}
+button::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+button:active::after { width: 300px; height: 300px; }
+button:active { transform: scale(0.96); }
+.btn-add { background: linear-gradient(135deg, #d81b60, #880e4f); }
+.btn-add:hover { background: linear-gradient(135deg, #880e4f, #d81b60); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(216, 27, 96, 0.4); }
+.btn-search { background: linear-gradient(135deg, #2196f3, #0d47a1); }
+.btn-search:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4); }
+.btn-clear { background: #9e9e9e; }
+.btn-clear:hover { background: #757575; transform: translateY(-2px); }
+.btn-action {
+    background: linear-gradient(135deg, var(--accent-color), #ff4081);
+    color: var(--secondary-color);
+    padding: 6px 12px;
+    font-size: 0.8em;
+    margin: 2px;
+    border-radius: 7px;
+    font-weight: 600;
+}
+.btn-action:hover { background: linear-gradient(135deg, #ff4081, var(--accent-color)); color: white; transform: translateY(-2px) scale(1.05); }
+.btn-danger { background: linear-gradient(135deg, #e53935, #b71c1c); color: white; }
+.btn-danger:hover { background: linear-gradient(135deg, #b71c1c, #e53935); transform: translateY(-2px) scale(1.05); }
+.btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); }
+.btn-info { background: linear-gradient(135deg, #2196f3, #1565c0); }
+.btn-warning { background: linear-gradient(135deg, #ff9800, #e65100); }
+.btn-purple { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+.btn-export, .btn-import, .btn-backup, .btn-restore, .btn-success, .btn-info, .btn-warning, .btn-purple {
+    transition: all 0.3s ease;
+}
+.btn-export:hover, .btn-import:hover, .btn-backup:hover, .btn-restore:hover, .btn-success:hover, .btn-info:hover, .btn-warning:hover, .btn-purple:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.top-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.top-actions button { flex: 1; min-width: 140px; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
+th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
+th { background: var(--light-bg); color: var(--secondary-color); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
+tr { transition: all 0.3s ease; }
+tr:hover { background: rgba(216, 27, 96, 0.05); transform: scale(1.005); }
+.actions-cell { display: flex; flex-wrap: wrap; gap: 4px; }
+.empty-message { text-align: center; padding: 40px 20px; color: #999; font-style: italic; }
+.points-display { font-weight: 700; color: var(--secondary-color); font-size: 1.1rem; }
+.search-result-info {
+    padding: 12px 18px;
+    background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+    color: #0d47a1;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    animation: slideDown 0.4s ease;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Tier badges */
+.tier-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+.tier-bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: white; }
+.tier-silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #333; }
+.tier-gold { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #333; }
+.tier-platinum { background: linear-gradient(135deg, #e5e4e2, #a8a8a8); color: #333; }
+
+/* Stats Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 15px;
+    margin-bottom: 20px;
+}
+.stat-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 8px 20px rgba(216, 27, 96, 0.3);
+    animation: cardFloat 3s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+.stat-card:nth-child(2) { animation-delay: 0.3s; background: linear-gradient(135deg, #2196f3, #0d47a1); }
+.stat-card:nth-child(3) { animation-delay: 0.6s; background: linear-gradient(135deg, #4caf50, #2e7d32); }
+.stat-card:nth-child(4) { animation-delay: 0.9s; background: linear-gradient(135deg, #ff9800, #e65100); }
+.stat-card:nth-child(5) { animation-delay: 1.2s; background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+.stat-card:nth-child(6) { animation-delay: 1.5s; background: linear-gradient(135deg, #00bcd4, #00838f); }
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
+.stat-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+.stat-value { font-size: 2rem; font-weight: 800; margin-bottom: 5px; }
+.stat-label { font-size: 0.85rem; opacity: 0.9; }
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 20px;
+}
+.modal-overlay.show { opacity: 1; visibility: visible; }
+.modal {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 30px;
+    max-width: 480px;
+    width: 100%;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.4);
+    transform: scale(0.8) translateY(30px);
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-height: 90vh;
+    overflow-y: auto;
+    border-top: 5px solid var(--primary-color);
+}
+.modal-overlay.show .modal { transform: scale(1) translateY(0); }
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
+.modal-close {
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--text-color);
+    cursor: pointer;
+    width: 35px; height: 35px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+.modal-close:hover { background: var(--danger); color: white; transform: rotate(90deg); }
+.modal-body { margin-bottom: 20px; }
+.modal-body label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+.modal-body input, .modal-body select, .modal-body textarea {
+    width: 100%;
+    margin-bottom: 15px;
+}
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+.modal-footer button { min-width: 100px; }
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: linear-gradient(135deg, #2e1b24, #4a2838);
+    color: #ffeef4;
+    padding: 14px 28px;
+    border-radius: 60px;
+    font-weight: 600;
+    box-shadow: 0 20px 40px -8px #3a1f2b;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 2000;
+    opacity: 0;
+    pointer-events: none;
+    max-width: 90vw;
+    text-align: center;
+    font-size: 0.95rem;
+    border-left: 5px solid var(--accent-color);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+.toast.success { background: linear-gradient(135deg, #2e7d32, #4caf50); border-left-color: #fff; }
+.toast.error { background: linear-gradient(135deg, #b71c1c, #e53935); border-left-color: #fff; }
+
+/* Birthday highlight */
+.birthday-highlight {
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent) !important;
+    position: relative;
+}
+.birthday-highlight::before {
+    content: '🎂';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    animation: bounceCake 1s infinite;
+}
+@keyframes bounceCake {
+    0%, 100% { transform: translateY(-50%); }
+    50% { transform: translateY(-65%); }
+}
+
+/* Confetti for celebrations */
+.confetti {
+    position: fixed;
+    width: 10px; height: 10px;
+    background: var(--accent-color);
+    animation: confettiFall 3s linear forwards;
+    z-index: 999;
+    pointer-events: none;
+}
+@keyframes confettiFall {
+    0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* Progress bar for tier */
+.tier-progress {
+    width: 100%;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+.tier-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+    border-radius: 3px;
+    transition: width 0.6s ease;
+    animation: progressShine 2s ease-in-out infinite;
+}
+@keyframes progressShine {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+}
+
+/* Transaction list */
+.transaction-item {
+    padding: 12px 15px;
+    background: var(--white);
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid var(--primary-color);
+    transition: all 0.3s ease;
+    animation: slideIn 0.4s ease backwards;
+}
+.transaction-item:hover { transform: translateX(5px); box-shadow: 0 4px 12px var(--shadow); }
+.transaction-item.earn { border-left-color: var(--success); }
+.transaction-item.spend { border-left-color: var(--danger); }
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
+.tx-info { flex: 1; }
+.tx-name { font-weight: 700; color: var(--secondary-color); }
+.tx-date { font-size: 0.75rem; color: #999; }
+.tx-points { font-weight: 800; font-size: 1.1rem; }
+.tx-points.earn { color: var(--success); }
+.tx-points.spend { color: var(--danger); }
+
+/* Settings */
+.settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+@media (max-width: 600px) {
+    .settings-grid { grid-template-columns: 1fr; }
+    .container { padding: 20px 15px; }
+    h1 { font-size: 1.2rem; }
+    th, td { padding: 8px 5px; font-size: 0.75rem; }
+    .btn-action { padding: 4px 7px; font-size: 0.7em; }
+    .top-actions button { flex: 1 1 100%; }
+    .section { padding: 15px; }
+    .tab-btn { padding: 8px 12px; font-size: 0.75rem; }
+    .modal { padding: 20px; }
+}
+
+/* QR Code display */
+.qr-display {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    margin: 15px 0;
+}
+.qr-display canvas, .qr-display img { max-width: 200px; }
+
+/* Reward card */
+.reward-card {
+    background: linear-gradient(135deg, var(--light-bg), var(--white));
+    border: 2px dashed var(--primary-color);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+.reward-card:hover { transform: scale(1.02); border-style: solid; box-shadow: 0 8px 20px var(--shadow); }
+
+/* Print styles */
+@media print {
+    .tabs, .header-controls, .top-actions, .actions-cell, button { display: none !important; }
+    body { background: white; padding: 0; }
+    .container { box-shadow: none; }
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>🎀 COSMETIC REWARDS CLUB 🎀</h1>
+<div class="container">
+    <div class="header-row">
+        <h1 id="app-title">🎀 COSMETIC REWARDS CLUB 🎀</h1>
+        <div class="header-controls">
+            <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">EN</button>
+            <button class="icon-btn" onclick="toggleDarkMode()" id="dark-btn" title="ডার্ক মোড">🌙</button>
+            <button class="icon-btn" onclick="window.print()" title="প্রিন্ট">🖨️</button>
+        </div>
+    </div>
 
-        <!-- নতুন গ্রাহক যোগ করার সেকশন -->
+    <!-- Navigation Tabs -->
+    <div class="tabs">
+        <button class="tab-btn active" data-tab="customers" onclick="switchTab('customers')"><span class="tab-text">👥 গ্রাহক</span></button>
+        <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="tab-text">📊 ড্যাশবোর্ড</span></button>
+        <button class="tab-btn" data-tab="transactions" onclick="switchTab('transactions')"><span class="tab-text">📜 হিস্ট্রি</span></button>
+        <button class="tab-btn" data-tab="rewards" onclick="switchTab('rewards')"><span class="tab-text">🎁 রিওয়ার্ড</span></button>
+        <button class="tab-btn" data-tab="tools" onclick="switchTab('tools')"><span class="tab-text">💾 টুলস</span></button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')"><span class="tab-text">⚙️ সেটিংস</span></button>
+    </div>
+
+    <!-- ============ CUSTOMERS TAB ============ -->
+    <div class="tab-content active" id="tab-customers">
         <div class="section">
-            <div class="section-title">➕ নতুন গ্রাহক যোগ করুন</div>
+            <div class="section-title"><span class="sec-title-text">➕ নতুন গ্রাহক যোগ করুন</span></div>
             <div class="form-group">
                 <input type="text" id="cust-name" placeholder="গ্রাহকের নাম">
                 <input type="tel" id="cust-phone" placeholder="ফোন নম্বর">
                 <input type="number" id="cust-points" placeholder="পয়েন্ট" min="0" value="0">
-                <button class="btn-add" onclick="addCustomer()">গ্রাহক যোগ করুন</button>
+                <input type="date" id="cust-birthday" title="জন্মতারিখ (ঐচ্ছিক)">
+                <button class="btn-add" onclick="addCustomer()" id="btn-add-cust">গ্রাহক যোগ করুন</button>
             </div>
         </div>
 
-        <!-- সার্চ সেকশন -->
         <div class="section">
-            <div class="section-title">🔍 গ্রাহক খুঁজুন</div>
+            <div class="section-title"><span class="sec-title-text">🔍 গ্রাহক খুঁজুন</span></div>
             <div class="form-group">
                 <input type="text" id="search-input" placeholder="নাম বা ফোন নম্বর দিয়ে খুঁজুন...">
-                <button class="btn-search" onclick="searchCustomer()">সার্চ করুন</button>
-                <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
+                <button class="btn-search" onclick="searchCustomer()" id="btn-search">সার্চ করুন</button>
+                <button class="btn-clear" onclick="clearSearch()" id="btn-reset">রিসেট</button>
             </div>
             <div id="search-info"></div>
         </div>
 
-        <!-- ডেটা ব্যাকআপ এবং টুলস সেকশন -->
         <div class="section">
-            <div class="section-title">💾 ডেটা ব্যাকআপ এবং টুলস</div>
-            <div class="top-actions">
-                <button class="btn-export" onclick="exportData()">📤 এক্সপোর্ট (JSON)</button>
-                <button class="btn-import" onclick="document.getElementById('import-file').click()">📥 ইমপোর্ট (JSON)</button>
-                <button class="btn-backup" onclick="createBackup()">💾 ব্যাকআপ সংরক্ষণ</button>
-                <button class="btn-restore" onclick="restoreBackup()">🔄 ব্যাকআপ থেকে ফেরত</button>
-                <input type="file" id="import-file" accept=".json" onchange="importData(event)">
-                <input type="file" id="restore-file" accept=".json" onchange="restoreFromFile(event)">
-            </div>
-        </div>
-
-        <!-- গ্রাহক তালিকা -->
-        <div class="section">
-            <div class="section-title">👥 গ্রাহক তালিকা (<span id="customer-count">0</span>)</div>
+            <div class="section-title"><span class="sec-title-text">👥 গ্রাহক তালিকা</span> (<span id="customer-count">0</span>)</div>
+            <div style="overflow-x:auto">
             <table>
                 <thead>
                     <tr>
                         <th>নাম</th>
-                        <th>ফোন নম্বর</th>
+                        <th>ফোন</th>
                         <th>পয়েন্ট</th>
+                        <th>লেভেল</th>
                         <th>অ্যাকশন</th>
                     </tr>
                 </thead>
-                <tbody id="customer-table">
-                    <!-- গ্রাহকের ডেটা এখানে দেখা যাবে -->
-                </tbody>
+                <tbody id="customer-table"></tbody>
             </table>
+            </div>
         </div>
     </div>
 
-    <!-- Toast notification -->
-    <div class="toast" id="toast"></div>
+    <!-- ============ DASHBOARD TAB ============ -->
+    <div class="tab-content" id="tab-dashboard">
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">📊 পরিসংখ্যান</span></div>
+            <div class="stats-grid">
+                <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">মোট গ্রাহক</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-points">0</div><div class="stat-label">মোট পয়েন্ট</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-value">৳0</div><div class="stat-label">মোট মূল্য</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-today">0</div><div class="stat-label">আজ যোগ হয়েছে</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-birthday">0</div><div class="stat-label">আজ জন্মদিন</div></div>
+                <div class="stat-card"><div class="stat-value" id="stat-avg">0</div><div class="stat-label">গড় পয়েন্ট</div></div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">🏆 টপ ৫ গ্রাহক</span></div>
+            <div id="top-customers"></div>
+        </div>
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">📈 সাম্প্রতিক কার্যক্রম (৭ দিন)</span></div>
+            <div id="recent-activity"></div>
+        </div>
+    </div>
 
-    <script>
-        // ---------- স্টেট ----------
-        let customers = [];
-        let isSearchActive = false; // সার্চ মোড ট্র্যাকিং
+    <!-- ============ TRANSACTIONS TAB ============ -->
+    <div class="tab-content" id="tab-transactions">
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">📜 পয়েন্ট ট্রানজেকশন হিস্ট্রি</span></div>
+            <div class="form-group" style="margin-bottom:15px">
+                <input type="text" id="tx-search" placeholder="গ্রাহকের নাম দিয়ে খুঁজুন..." oninput="renderTransactions()">
+                <select id="tx-filter" onchange="renderTransactions()">
+                    <option value="all">সব</option>
+                    <option value="earn">শুধু যোগ</option>
+                    <option value="spend">শুধু খরচ</option>
+                </select>
+                <button class="btn-clear" onclick="clearTransactions()" id="btn-clear-tx">হিস্ট্রি মুছুন</button>
+            </div>
+            <div id="transaction-list"></div>
+        </div>
+    </div>
 
-        const STORAGE_KEY = 'cosmeticsCustomers';
-        const BACKUP_KEY = 'cosmeticsCustomersBackup';
+    <!-- ============ REWARDS TAB ============ -->
+    <div class="tab-content" id="tab-rewards">
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">🎁 রিওয়ার্ড ম্যানেজমেন্ট</span></div>
+            <div class="form-group" style="margin-bottom:15px">
+                <input type="text" id="reward-name" placeholder="রিওয়ার্ডের নাম (যেমন: ফ্রি লিপস্টিক)">
+                <input type="number" id="reward-points" placeholder="প্রয়োজনীয় পয়েন্ট" min="1">
+                <button class="btn-success" onclick="addReward()" id="btn-add-reward">রিওয়ার্ড যোগ</button>
+            </div>
+            <div id="reward-list"></div>
+        </div>
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">🎯 রিডেম্পশন হিস্ট্রি</span></div>
+            <div id="redemption-history"></div>
+        </div>
+    </div>
 
-        // ---------- টোস্ট নোটিফিকেশন ----------
-        let toastTimer = null;
-        function showToast(message, duration = 2500) {
-            const toastEl = document.getElementById('toast');
-            toastEl.textContent = message;
-            toastEl.classList.add('show');
-            if (toastTimer) clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => {
-                toastEl.classList.remove('show');
-            }, duration);
+    <!-- ============ TOOLS TAB ============ -->
+    <div class="tab-content" id="tab-tools">
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">💾 ডেটা ব্যাকআপ এবং টুলস</span></div>
+            <div class="top-actions">
+                <button class="btn-export" onclick="exportData()" id="btn-export">📤 এক্সপোর্ট (JSON)</button>
+                <button class="btn-import" onclick="document.getElementById('import-file').click()" id="btn-import">📥 ইমপোর্ট (JSON)</button>
+                <button class="btn-success" onclick="exportCSV()" id="btn-csv">📊 Excel/CSV</button>
+                <button class="btn-backup" onclick="createBackup()" id="btn-backup">💾 ব্যাকআপ সংরক্ষণ</button>
+                <button class="btn-restore" onclick="restoreBackup()" id="btn-restore">🔄 ব্যাকআপ থেকে ফেরত</button>
+                <button class="btn-info" onclick="exportCloud()" id="btn-cloud">☁️ Google Sheets</button>
+                <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="display:none">
+                <input type="file" id="restore-file" accept=".json" onchange="restoreFromFile(event)" style="display:none">
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">📱 গ্রাহকের QR কোড</span></div>
+            <div class="form-group">
+                <input type="text" id="qr-input" placeholder="ফোন নম্বর লিখুন">
+                <button class="btn-info" onclick="generateQR()" id="btn-qr">QR তৈরি করুন</button>
+            </div>
+            <div id="qr-display"></div>
+        </div>
+    </div>
+
+    <!-- ============ SETTINGS TAB ============ -->
+    <div class="tab-content" id="tab-settings">
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">⚙️ সাধারণ সেটিংস</span></div>
+            <div class="settings-grid">
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">১ পয়েন্টের মূল্য (৳)</label>
+                    <input type="number" id="set-point-value" value="1" min="0" step="0.01" onchange="saveSettings()">
+                </div>
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">পয়েন্টের মেয়াদ (দিন)</label>
+                    <input type="number" id="set-expiry" value="365" min="0" onchange="saveSettings()">
+                </div>
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">প্রতি ১০০ টাকায় পয়েন্ট</label>
+                    <input type="number" id="set-purchase-rate" value="1" min="0" step="0.1" onchange="saveSettings()">
+                </div>
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">জন্মদিন বোনাস পয়েন্ট</label>
+                    <input type="number" id="set-birthday-bonus" value="50" min="0" onchange="saveSettings()">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">🎯 টিয়ার/লেভেল সিস্টেম</span></div>
+            <div class="settings-grid">
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">🥉 ব্রোঞ্জ (সর্বনিম্ন)</label>
+                    <input type="number" id="set-tier-bronze" value="0" min="0" onchange="saveSettings()">
+                </div>
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">🥈 সিলভার</label>
+                    <input type="number" id="set-tier-silver" value="100" min="0" onchange="saveSettings()">
+                </div>
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">🥇 গোল্ড</label>
+                    <input type="number" id="set-tier-gold" value="500" min="0" onchange="saveSettings()">
+                </div>
+                <div>
+                    <label style="display:block;margin-bottom:6px;font-weight:600">💎 প্ল্যাটিনাম</label>
+                    <input type="number" id="set-tier-platinum" value="1000" min="0" onchange="saveSettings()">
+                </div>
+            </div>
+        </div>
+        <div class="section">
+            <div class="section-title"><span class="sec-title-text">📱 হোয়াটসঅ্যাপ/SMS টেমপ্লেট</span></div>
+            <div>
+                <label style="display:block;margin-bottom:6px;font-weight:600">নতুন গ্রাহক স্বাগত</label>
+                <textarea id="set-welcome-msg" rows="2" style="width:100%;margin-bottom:10px">প্রিয় {name}, আমাদের লয়্যালটি ক্লাবে স্বাগতম! আপনার বর্তমান পয়েন্ট: {points}</textarea>
+                <label style="display:block;margin-bottom:6px;font-weight:600">জন্মদিনের শুভেচ্ছা</label>
+                <textarea id="set-birthday-msg" rows="2" style="width:100%;margin-bottom:10px">শুভ জন্মদিন {name}! 🎂 উপহার হিসেবে {bonus} বোনাস পয়েন্ট পেয়েছেন!</textarea>
+                <label style="display:block;margin-bottom:6px;font-weight:600">পয়েন্ট আপডেট</label>
+                <textarea id="set-update-msg" rows="2" style="width:100%;margin-bottom:10px">প্রিয় {name}, আপনার অ্যাকাউন্টে {points} পয়েন্ট {action} হয়েছে। মোট: {total}</textarea>
+                <button class="btn-success" onclick="saveSettings()" id="btn-save-settings">সেটিংস সেভ করুন</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal-box">
+        <div class="modal-header">
+            <div class="modal-title" id="modal-title">শিরোনাম</div>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+        <div class="modal-body" id="modal-body"></div>
+        <div class="modal-footer" id="modal-footer"></div>
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   STATE MANAGEMENT
+============================================================ */
+let customers = [];
+let transactions = [];
+let rewards = [];
+let redemptions = [];
+let settings = {
+    pointValue: 1,
+    expiryDays: 365,
+    purchaseRate: 1,
+    birthdayBonus: 50,
+    tierBronze: 0,
+    tierSilver: 100,
+    tierGold: 500,
+    tierPlatinum: 1000,
+    welcomeMsg: 'প্রিয় {name}, আমাদের লয়্যালটি ক্লাবে স্বাগতম! আপনার বর্তমান পয়েন্ট: {points}',
+    birthdayMsg: 'শুভ জন্মদিন {name}! 🎂 উপহার হিসেবে {bonus} বোনাস পয়েন্ট পেয়েছেন!',
+    updateMsg: 'প্রিয় {name}, আপনার অ্যাকাউন্টে {points} পয়েন্ট {action} হয়েছে। মোট: {total}'
+};
+let isSearchActive = false;
+let currentLang = 'bn';
+let darkMode = false;
+
+const STORAGE_KEY = 'cosmeticsCustomers_v3';
+const TX_KEY = 'cosmeticsTransactions_v3';
+const REWARDS_KEY = 'cosmeticsRewards_v3';
+const REDEMPTIONS_KEY = 'cosmeticsRedemptions_v3';
+const SETTINGS_KEY = 'cosmeticsSettings_v3';
+const BACKUP_KEY = 'cosmeticsBackup_v3';
+const DARK_KEY = 'cosmeticsDarkMode';
+
+/* ============================================================
+   I18N (Multi-language)
+============================================================ */
+const i18n = {
+    bn: {
+        title: '🎀 COSMETIC REWARDS CLUB 🎀',
+        tabCustomers: '👥 গ্রাহক',
+        tabDashboard: '📊 ড্যাশবোর্ড',
+        tabTransactions: '📜 হিস্ট্রি',
+        tabRewards: '🎁 রিওয়ার্ড',
+        tabTools: '💾 টুলস',
+        tabSettings: '⚙️ সেটিংস',
+        addSection: '➕ নতুন গ্রাহক যোগ করুন',
+        namePh: 'গ্রাহকের নাম',
+        phonePh: 'ফোন নম্বর',
+        pointsPh: 'পয়েন্ট',
+        addBtn: 'গ্রাহক যোগ করুন',
+        searchSection: '🔍 গ্রাহক খুঁজুন',
+        searchPh: 'নাম বা ফোন নম্বর দিয়ে খুঁজুন...',
+        searchBtn: 'সার্চ করুন',
+        resetBtn: 'রিসেট',
+        listSection: '👥 গ্রাহক তালিকা',
+        thName: 'নাম', thPhone: 'ফোন', thPoints: 'পয়েন্ট', thTier: 'লেভেল', thAction: 'অ্যাকশন',
+        addPoints: '➕ যোগ', deductPoints: '➖ ডিডাক্ট', editBtn: '✏️ এডিট', deleteBtn: '🗑️ ডিলিট'
+    },
+    en: {
+        title: '🎀 COSMETIC REWARDS CLUB 🎀',
+        tabCustomers: '👥 Customers',
+        tabDashboard: '📊 Dashboard',
+        tabTransactions: '📜 History',
+        tabRewards: '🎁 Rewards',
+        tabTools: '💾 Tools',
+        tabSettings: '⚙️ Settings',
+        addSection: '➕ Add New Customer',
+        namePh: 'Customer Name',
+        phonePh: 'Phone Number',
+        pointsPh: 'Points',
+        addBtn: 'Add Customer',
+        searchSection: '🔍 Search Customer',
+        searchPh: 'Search by name or phone...',
+        searchBtn: 'Search',
+        resetBtn: 'Reset',
+        listSection: '👥 Customer List',
+        thName: 'Name', thPhone: 'Phone', thPoints: 'Points', thTier: 'Tier', thAction: 'Actions',
+        addPoints: '➕ Add', deductPoints: '➖ Deduct', editBtn: '✏️ Edit', deleteBtn: '🗑️ Delete'
+    }
+};
+
+function t(key) { return i18n[currentLang][key] || key; }
+
+/* ============================================================
+   TOAST
+============================================================ */
+let toastTimer = null;
+function showToast(msg, type = 'info', duration = 2500) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'toast show ' + type;
+    if (toastTimer) clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => { el.classList.remove('show'); }, duration);
+}
+
+/* ============================================================
+   MODAL (Custom Popup)
+============================================================ */
+function openModal(title, bodyHtml, footerHtml) {
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = bodyHtml;
+    document.getElementById('modal-footer').innerHTML = footerHtml || '';
+    document.getElementById('modal-overlay').classList.add('show');
+}
+function closeModal() {
+    document.getElementById('modal-overlay').classList.remove('show');
+}
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
+    if (e.target.id === 'modal-overlay') closeModal();
+});
+
+// Confirm dialog
+function showConfirm(title, message, onConfirm, confirmText = 'হ্যাঁ', danger = false) {
+    const body = `<p style="font-size:1rem;line-height:1.6">${message}</p>`;
+    const footer = `
+        <button class="btn-clear" onclick="closeModal()">বাতিল</button>
+        <button class="${danger ? 'btn-danger' : 'btn-success'}" id="modal-confirm-btn">${confirmText}</button>
+    `;
+    openModal(title, body, footer);
+    document.getElementById('modal-confirm-btn').onclick = () => {
+        closeModal();
+        onConfirm();
+    };
+}
+
+// Prompt dialog
+function showPrompt(title, fields, onSubmit) {
+    let bodyHtml = '';
+    fields.forEach(f => {
+        bodyHtml += `<label>${f.label}</label>`;
+        if (f.type === 'select') {
+            bodyHtml += `<select id="prompt-${f.id}">`;
+            f.options.forEach(o => bodyHtml += `<option value="${o.value}">${o.label}</option>`);
+            bodyHtml += `</select>`;
+        } else if (f.type === 'textarea') {
+            bodyHtml += `<textarea id="prompt-${f.id}" rows="2">${f.value || ''}</textarea>`;
+        } else {
+            bodyHtml += `<input type="${f.type}" id="prompt-${f.id}" value="${f.value || ''}" placeholder="${f.placeholder || ''}">`;
         }
+    });
+    const footer = `
+        <button class="btn-clear" onclick="closeModal()">বাতিল</button>
+        <button class="btn-success" id="prompt-submit">ঠিক আছে</button>
+    `;
+    openModal(title, bodyHtml, footer);
+    document.getElementById('prompt-submit').onclick = () => {
+        const values = {};
+        fields.forEach(f => {
+            values[f.id] = document.getElementById('prompt-' + f.id).value.trim();
+        });
+        closeModal();
+        onSubmit(values);
+    };
+    // Enter key support
+    setTimeout(() => {
+        const first = document.getElementById('prompt-' + fields[0].id);
+        if (first) first.focus();
+    }, 100);
+}
 
-        // ---------- ডেটা লোড / সেভ ----------
-        function loadCustomers() {
-            try {
-                const stored = localStorage.getItem(STORAGE_KEY);
-                if (stored) {
-                    const parsed = JSON.parse(stored);
-                    if (Array.isArray(parsed)) {
-                        customers = parsed.filter(item =>
-                            item && typeof item === 'object' &&
-                            typeof item.name === 'string' &&
-                            typeof item.phone === 'string' &&
-                            typeof item.points === 'number' && !isNaN(item.points)
-                        );
-                    } else {
-                        customers = [];
-                    }
-                } else {
-                    customers = [];
-                }
-            } catch (error) {
-                console.error('ডেটা লোড সমস্যা:', error);
-                customers = [];
-            }
-        }
+/* ============================================================
+   DATA LOAD / SAVE
+============================================================ */
+function loadAll() {
+    try {
+        customers = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        transactions = JSON.parse(localStorage.getItem(TX_KEY)) || [];
+        rewards = JSON.parse(localStorage.getItem(REWARDS_KEY)) || [];
+        redemptions = JSON.parse(localStorage.getItem(REDEMPTIONS_KEY)) || [];
+        const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        if (s) settings = { ...settings, ...s };
+        darkMode = localStorage.getItem(DARK_KEY) === 'true';
+    } catch (e) {
+        console.error('Load error:', e);
+        customers = []; transactions = []; rewards = []; redemptions = [];
+    }
+}
+function saveAll() {
+    try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
+        localStorage.setItem(TX_KEY, JSON.stringify(transactions));
+        localStorage.setItem(REWARDS_KEY, JSON.stringify(rewards));
+        localStorage.setItem(REDEMPTIONS_KEY, JSON.stringify(redemptions));
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+    } catch (e) {
+        console.error('Save error:', e);
+        showToast('⚠️ ডেটা সেভ সমস্যা!', 'error');
+    }
+}
+function saveSettings() {
+    settings.pointValue = parseFloat(document.getElementById('set-point-value').value) || 0;
+    settings.expiryDays = parseInt(document.getElementById('set-expiry').value) || 0;
+    settings.purchaseRate = parseFloat(document.getElementById('set-purchase-rate').value) || 0;
+    settings.birthdayBonus = parseInt(document.getElementById('set-birthday-bonus').value) || 0;
+    settings.tierBronze = parseInt(document.getElementById('set-tier-bronze').value) || 0;
+    settings.tierSilver = parseInt(document.getElementById('set-tier-silver').value) || 0;
+    settings.tierGold = parseInt(document.getElementById('set-tier-gold').value) || 0;
+    settings.tierPlatinum = parseInt(document.getElementById('set-tier-platinum').value) || 0;
+    settings.welcomeMsg = document.getElementById('set-welcome-msg').value;
+    settings.birthdayMsg = document.getElementById('set-birthday-msg').value;
+    settings.updateMsg = document.getElementById('set-update-msg').value;
+    saveAll();
+    showToast('✅ সেটিংস সেভ হয়েছে', 'success');
+    renderAll();
+}
+function loadSettingsToUI() {
+    document.getElementById('set-point-value').value = settings.pointValue;
+    document.getElementById('set-expiry').value = settings.expiryDays;
+    document.getElementById('set-purchase-rate').value = settings.purchaseRate;
+    document.getElementById('set-birthday-bonus').value = settings.birthdayBonus;
+    document.getElementById('set-tier-bronze').value = settings.tierBronze;
+    document.getElementById('set-tier-silver').value = settings.tierSilver;
+    document.getElementById('set-tier-gold').value = settings.tierGold;
+    document.getElementById('set-tier-platinum').value = settings.tierPlatinum;
+    document.getElementById('set-welcome-msg').value = settings.welcomeMsg;
+    document.getElementById('set-birthday-msg').value = settings.birthdayMsg;
+    document.getElementById('set-update-msg').value = settings.updateMsg;
+}
 
-        function saveCustomers() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
-            } catch (error) {
-                console.error('ডেটা সেভ সমস্যা:', error);
-                showToast('⚠️ ডেটা সেভ করতে সমস্যা হয়েছে!');
-            }
-        }
+/* ============================================================
+   UTILITIES
+============================================================ */
+function escapeHtml(text) {
+    if (text === null || text === undefined) return '';
+    const div = document.createElement('div');
+    div.textContent = String(text);
+    return div.innerHTML;
+}
+function getTier(points) {
+    if (points >= settings.tierPlatinum) return { name: '💎 Platinum', class: 'tier-platinum' };
+    if (points >= settings.tierGold) return { name: '🥇 Gold', class: 'tier-gold' };
+    if (points >= settings.tierSilver) return { name: '🥈 Silver', class: 'tier-silver' };
+    return { name: '🥉 Bronze', class: 'tier-bronze' };
+}
+function getNextTier(points) {
+    if (points < settings.tierSilver) return { name: 'Silver', need: settings.tierSilver - points, max: settings.tierSilver };
+    if (points < settings.tierGold) return { name: 'Gold', need: settings.tierGold - points, max: settings.tierGold };
+    if (points < settings.tierPlatinum) return { name: 'Platinum', need: settings.tierPlatinum - points, max: settings.tierPlatinum };
+    return null;
+}
+function isBirthdayToday(birthday) {
+    if (!birthday) return false;
+    const today = new Date();
+    const bd = new Date(birthday);
+    return today.getDate() === bd.getDate() && today.getMonth() === bd.getMonth();
+}
+function formatDate(iso) {
+    if (!iso) return '';
+    try {
+        return new Date(iso).toLocaleString('bn-BD');
+    } catch { return iso; }
+}
+function addTransaction(name, phone, points, type, note = '') {
+    transactions.unshift({
+        id: Date.now() + Math.random(),
+        name, phone, points, type, note,
+        date: new Date().toISOString()
+    });
+    // Keep last 1000
+    if (transactions.length > 1000) transactions = transactions.slice(0, 1000);
+    saveAll();
+}
+function playSound() {
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.frequency.value = 880;
+        gain.gain.setValueAtTime(0.1, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+        osc.start(); osc.stop(ctx.currentTime + 0.2);
+    } catch (e) { /* silent */ }
+}
+function throwConfetti() {
+    const colors = ['#d81b60', '#ff80ab', '#ffd700', '#4caf50', '#2196f3', '#9c27b0'];
+    for (let i = 0; i < 30; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDelay = Math.random() * 0.5 + 's';
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3500);
+    }
+}
 
-        // ---------- XSS এস্কেপ ----------
-        function escapeHtml(text) {
-            if (text === null || text === undefined) return '';
-            const div = document.createElement('div');
-            div.textContent = String(text);
-            return div.innerHTML;
-        }
+/* ============================================================
+   TAB SWITCHING
+============================================================ */
+function switchTab(name) {
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+    if (name === 'dashboard') renderDashboard();
+    if (name === 'transactions') renderTransactions();
+    if (name === 'rewards') renderRewards();
+    if (name === 'settings') loadSettingsToUI();
+}
 
-        // ---------- টেবিল রেন্ডার (সংশোধিত) ----------
-        function renderTable(customersToShow, message) {
-            const tableBody = document.getElementById('customer-table');
-            const countEl = document.getElementById('customer-count');
-            tableBody.innerHTML = '';
+/* ============================================================
+   LANGUAGE
+============================================================ */
+function toggleLanguage() {
+    currentLang = currentLang === 'bn' ? 'en' : 'bn';
+    document.getElementById('lang-btn').textContent = currentLang === 'bn' ? 'EN' : 'বাং';
+    applyLanguage();
+}
+function applyLanguage() {
+    document.getElementById('app-title').textContent = t('title');
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        const keys = ['tabCustomers', 'tabDashboard', 'tabTransactions', 'tabRewards', 'tabTools', 'tabSettings'];
+        btn.querySelector('.tab-text').textContent = t(keys[i]);
+    });
+    document.getElementById('cust-name').placeholder = t('namePh');
+    document.getElementById('cust-phone').placeholder = t('phonePh');
+    document.getElementById('cust-points').placeholder = t('pointsPh');
+    document.getElementById('btn-add-cust').textContent = t('addBtn');
+    document.getElementById('search-input').placeholder = t('searchPh');
+    document.getElementById('btn-search').textContent = t('searchBtn');
+    document.getElementById('btn-reset').textContent = t('resetBtn');
+    document.querySelectorAll('th')[0].textContent = t('thName');
+    document.querySelectorAll('th')[1].textContent = t('thPhone');
+    document.querySelectorAll('th')[2].textContent = t('thPoints');
+    document.querySelectorAll('th')[3].textContent = t('thTier');
+    document.querySelectorAll('th')[4].textContent = t('thAction');
+    updateTable();
+}
 
-            countEl.textContent = customersToShow.length;
+/* ============================================================
+   DARK MODE
+============================================================ */
+function toggleDarkMode() {
+    darkMode = !darkMode;
+    document.body.classList.toggle('dark-mode', darkMode);
+    document.getElementById('dark-btn').textContent = darkMode ? '☀️' : '🌙';
+    localStorage.setItem(DARK_KEY, darkMode);
+}
 
-            if (customersToShow.length === 0) {
-                const emptyRow = document.createElement('tr');
-                emptyRow.innerHTML = `<td colspan="4" class="empty-message">${message || 'কোন গ্রাহক নেই। নতুন গ্রাহক যোগ করুন।'}</td>`;
-                tableBody.appendChild(emptyRow);
-                return;
-            }
+/* ============================================================
+   RENDER TABLE
+============================================================ */
+function renderTable(list, message) {
+    const tbody = document.getElementById('customer-table');
+    const countEl = document.getElementById('customer-count');
+    tbody.innerHTML = '';
+    countEl.textContent = list.length;
 
-            customersToShow.forEach(({ customer, originalIndex }) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${escapeHtml(customer.name)}</td>
-                    <td>${escapeHtml(customer.phone)}</td>
-                    <td class="points-display">${customer.points}</td>
-                    <td class="actions-cell">
-                        <button class="btn-action" onclick="addPointsPrompt(${originalIndex})">➕ যোগ</button>
-                        <button class="btn-action" onclick="deductPointsPrompt(${originalIndex})">➖ ডিডাক্ট</button>
-                        <button class="btn-action" onclick="editCustomerPrompt(${originalIndex})">✏️ এডিট</button>
-                        <button class="btn-danger btn-action" onclick="deleteCustomer(${originalIndex})">🗑️ ডিলিট</button>
-                    </td>
-                `;
-                tableBody.appendChild(row);
+    if (list.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-message">${message || 'কোন গ্রাহক নেই।'}</td></tr>`;
+        return;
+    }
+    list.forEach(({ customer, originalIndex }) => {
+        const tier = getTier(customer.points);
+        const isBd = isBirthdayToday(customer.birthday);
+        const row = document.createElement('tr');
+        if (isBd) row.classList.add('birthday-highlight');
+        row.innerHTML = `
+            <td>${escapeHtml(customer.name)}${customer.note ? '<br><small style="color:#999">📝 ' + escapeHtml(customer.note) + '</small>' : ''}${customer.refBy ? '<br><small style="color:#2196f3">🔗 ' + escapeHtml(customer.refBy) + '</small>' : ''}</td>
+            <td>${escapeHtml(customer.phone)}</td>
+            <td class="points-display">${customer.points}</td>
+            <td><span class="tier-badge ${tier.class}">${tier.name}</span></td>
+            <td class="actions-cell">
+                <button class="btn-action" onclick="addPointsPrompt(${originalIndex})">➕</button>
+                <button class="btn-action" onclick="deductPointsPrompt(${originalIndex})">➖</button>
+                <button class="btn-action" onclick="editCustomerPrompt(${originalIndex})">✏️</button>
+                <button class="btn-action" onclick="showCustomerQR(${originalIndex})">📱</button>
+                <button class="btn-action" onclick="sendWhatsApp(${originalIndex})">💬</button>
+                <button class="btn-danger btn-action" onclick="deleteCustomer(${originalIndex})">🗑️</button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+function updateTable() {
+    if (isSearchActive) { searchCustomer(true); return; }
+    const list = customers.map((c, i) => ({ customer: c, originalIndex: i }));
+    renderTable(list);
+}
+
+/* ============================================================
+   ADD CUSTOMER
+============================================================ */
+function addCustomer() {
+    const name = document.getElementById('cust-name').value.trim();
+    const phone = document.getElementById('cust-phone').value.trim();
+    const points = parseInt(document.getElementById('cust-points').value) || 0;
+    const birthday = document.getElementById('cust-birthday').value;
+
+    if (!name || !phone) { showToast('⚠️ নাম এবং ফোন নম্বর লিখুন', 'error'); return; }
+    if (points < 0) { showToast('⚠️ পয়েন্ট ঋণাত্মক নয়', 'error'); return; }
+
+    const existingIndex = customers.findIndex(c => c.phone === phone);
+    if (existingIndex !== -1) {
+        showConfirm('ডুপ্লিকেট ফোন', `এই ফোন (${phone}) ইতিমধ্যে "${customers[existingIndex].name}" নামে আছে। পয়েন্ট যোগ করবেন?`, () => {
+            customers[existingIndex].points += points;
+            addTransaction(customers[existingIndex].name, phone, points, 'earn', 'ডুপ্লিকেট যোগ');
+            saveAll(); clearSearch(); renderAll();
+            showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে`, 'success');
+            playSound();
+        });
+        return;
+    }
+
+    // Check if birthday today
+    const isBd = isBirthdayToday(birthday);
+    let bonus = 0;
+    if (isBd) { bonus = settings.birthdayBonus; points += bonus; }
+
+    customers.push({ name, phone, points, birthday, note: '', refBy: '' });
+    addTransaction(name, phone, points, 'earn', isBd ? 'নতুন + জন্মদিন বোনাস' : 'নতুন গ্রাহক');
+    document.getElementById('cust-name').value = '';
+    document.getElementById('cust-phone').value = '';
+    document.getElementById('cust-points').value = '0';
+    document.getElementById('cust-birthday').value = '';
+    saveAll(); clearSearch(); renderAll();
+    showToast(`🌸 "${name}" যোগ হয়েছে${bonus ? ' (+' + bonus + ' জন্মদিন বোনাস)' : ''}`, 'success');
+    if (isBd) throwConfetti();
+    playSound();
+}
+
+/* ============================================================
+   POINT ACTIONS
+============================================================ */
+function addPointsPrompt(index) {
+    if (index < 0 || index >= customers.length) return;
+    const c = customers[index];
+    showPrompt(`➕ পয়েন্ট যোগ — ${c.name}`, [
+        { id: 'points', label: 'কত পয়েন্ট যোগ করবেন?', type: 'number', value: '10', placeholder: '10' }
+    ], (vals) => {
+        const p = parseInt(vals.points);
+        if (isNaN(p) || p <= 0) { showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error'); return; }
+        customers[index].points += p;
+        addTransaction(c.name, c.phone, p, 'earn', 'ম্যানুয়াল যোগ');
+        saveAll(); renderAll();
+        showToast(`✅ ${p} পয়েন্ট যোগ হয়েছে`, 'success');
+        playSound();
+    });
+}
+function deductPointsPrompt(index) {
+    if (index < 0 || index >= customers.length) return;
+    const c = customers[index];
+    showPrompt(`➖ পয়েন্ট ডিডাক্ট — ${c.name}`, [
+        { id: 'points', label: `কত পয়েন্ট কাটবেন? (বর্তমান: ${c.points})`, type: 'number', value: '10' }
+    ], (vals) => {
+        const p = parseInt(vals.points);
+        if (isNaN(p) || p <= 0) { showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error'); return; }
+        if (c.points < p) { showToast(`⚠️ পর্যাপ্ত পয়েন্ট নেই! বর্তমান: ${c.points}`, 'error'); return; }
+        customers[index].points -= p;
+        addTransaction(c.name, c.phone, p, 'spend', 'ম্যানুয়াল ডিডাক্ট');
+        saveAll(); renderAll();
+        showToast(`✅ ${p} পয়েন্ট কাটা হয়েছে`, 'success');
+    });
+}
+function editCustomerPrompt(index) {
+    const c = customers[index];
+    showPrompt(`✏️ এডিট — ${c.name}`, [
+        { id: 'name', label: 'নাম', type: 'text', value: c.name },
+        { id: 'phone', label: 'ফোন', type: 'tel', value: c.phone },
+        { id: 'points', label: 'পয়েন্ট', type: 'number', value: c.points },
+        { id: 'birthday', label: 'জন্মতারিখ', type: 'date', value: c.birthday || '' },
+        { id: 'note', label: 'নোট', type: 'text', value: c.note || '' }
+    ], (v) => {
+        if (!v.name || !v.phone) { showToast('⚠️ নাম/ফোন খালি নয়', 'error'); return; }
+        const dup = customers.findIndex((x, i) => i !== index && x.phone === v.phone);
+        if (dup !== -1) { showToast('⚠️ ফোন অন্য গ্রাহকের', 'error'); return; }
+        const newPts = parseInt(v.points);
+        if (isNaN(newPts) || newPts < 0) { showToast('⚠️ বৈধ পয়েন্ট', 'error'); return; }
+        const diff = newPts - c.points;
+        customers[index] = { ...c, name: v.name, phone: v.phone, points: newPts, birthday: v.birthday, note: v.note };
+        if (diff !== 0) addTransaction(v.name, v.phone, Math.abs(diff), diff > 0 ? 'earn' : 'spend', 'এডিট');
+        saveAll(); renderAll();
+        showToast('✏️ আপডেট হয়েছে', 'success');
+    });
+}
+function deleteCustomer(index) {
+    const c = customers[index];
+    showConfirm('🗑️ ডিলিট', `"${c.name}" (${c.phone}) ডিলিট করবেন?`, () => {
+        customers.splice(index, 1);
+        saveAll(); clearSearch(); renderAll();
+        showToast('🗑️ ডিলিট হয়েছে', 'success');
+    }, 'ডিলিট', true);
+}
+
+/* ============================================================
+   SEARCH
+============================================================ */
+function searchCustomer(silent = false) {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    const info = document.getElementById('search-info');
+    if (!q) { if (!silent) showToast('⚠️ কিছু লিখুন', 'error'); return; }
+
+    const matches = [];
+    customers.forEach((c, i) => {
+        if (c.name.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q)) matches.push({ customer: c, originalIndex: i });
+    });
+    isSearchActive = true;
+    if (matches.length === 0) {
+        info.innerHTML = `<div class="search-result-info" style="background:#ffebee;color:#b71c1c">🔍 "${escapeHtml(q)}" — পাওয়া যায়নি <button class="btn-clear" onclick="clearSearch()">রিসেট</button></div>`;
+        renderTable([], `🔍 "${q}" এর জন্য কিছু নেই`);
+    } else {
+        info.innerHTML = `<div class="search-result-info">🔍 "${escapeHtml(q)}" — ${matches.length} জন পাওয়া গেছে <button class="btn-clear" onclick="clearSearch()">রিসেট</button></div>`;
+        renderTable(matches);
+    }
+}
+function clearSearch() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('search-info').innerHTML = '';
+    isSearchActive = false;
+    updateTable();
+}
+
+/* ============================================================
+   DASHBOARD
+============================================================ */
+function renderDashboard() {
+    const total = customers.length;
+    const totalPts = customers.reduce((s, c) => s + c.points, 0);
+    const today = new Date().toISOString().slice(0, 10);
+    const todayCount = transactions.filter(t => t.date.slice(0, 10) === today && t.note && t.note.includes('নতুন')).length;
+    const bdCount = customers.filter(c => isBirthdayToday(c.birthday)).length;
+    const avg = total ? Math.round(totalPts / total) : 0;
+
+    document.getElementById('stat-total').textContent = total;
+    document.getElementById('stat-points').textContent = totalPts;
+    document.getElementById('stat-value').textContent = '৳' + (totalPts * settings.pointValue).toFixed(0);
+    document.getElementById('stat-today').textContent = todayCount;
+    document.getElementById('stat-birthday').textContent = bdCount;
+    document.getElementById('stat-avg').textContent = avg;
+
+    // Top 5
+    const top = [...customers].sort((a, b) => b.points - a.points).slice(0, 5);
+    const topEl = document.getElementById('top-customers');
+    if (top.length === 0) { topEl.innerHTML = '<p class="empty-message">কোন গ্রাহক নেই</p>'; }
+    else {
+        topEl.innerHTML = top.map((c, i) => {
+            const medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][i];
+            const tier = getTier(c.points);
+            return `<div class="transaction-item" style="animation-delay:${i * 0.1}s"><span style="font-size:1.5rem">${medal}</span><div class="tx-info"><div class="tx-name">${escapeHtml(c.name)}</div><div class="tx-date">${escapeHtml(c.phone)}</div></div><div><span class="tier-badge ${tier.class}">${tier.name}</span><br><strong style="color:var(--primary-color)">${c.points} pts</strong></div></div>`;
+        }).join('');
+    }
+
+    // Recent 7 days activity
+    const weekAgo = Date.now() - 7 * 86400000;
+    const recent = transactions.filter(t => new Date(t.date).getTime() > weekAgo);
+    const earn = recent.filter(t => t.type === 'earn').reduce((s, t) => s + t.points, 0);
+    const spend = recent.filter(t => t.type === 'spend').reduce((s, t) => s + t.points, 0);
+    document.getElementById('recent-activity').innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-card" style="background:linear-gradient(135deg,#4caf50,#2e7d32)"><div class="stat-value">+${earn}</div><div class="stat-label">৭ দিনে যোগ</div></div>
+            <div class="stat-card" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><div class="stat-value">-${spend}</div><div class="stat-label">৭ দিনে খরচ</div></div>
+            <div class="stat-card" style="background:linear-gradient(135deg,#2196f3,#0d47a1)"><div class="stat-value">${recent.length}</div><div class="stat-label">মোট ট্রানজেকশন</div></div>
+        </div>
+    `;
+}
+
+/* ============================================================
+   TRANSACTIONS
+============================================================ */
+function renderTransactions() {
+    const q = (document.getElementById('tx-search')?.value || '').trim().toLowerCase();
+    const filter = document.getElementById('tx-filter')?.value || 'all';
+    let list = transactions;
+    if (q) list = list.filter(t => t.name.toLowerCase().includes(q) || t.phone.includes(q));
+    if (filter !== 'all') list = list.filter(t => t.type === filter);
+
+    const el = document.getElementById('transaction-list');
+    if (list.length === 0) { el.innerHTML = '<p class="empty-message">কোন ট্রানজেকশন নেই</p>'; return; }
+    el.innerHTML = list.slice(0, 200).map((t, i) => `
+        <div class="transaction-item ${t.type}" style="animation-delay:${Math.min(i * 0.03, 1)}s">
+            <div class="tx-info">
+                <div class="tx-name">${escapeHtml(t.name)} <small style="color:#999">(${escapeHtml(t.phone)})</small></div>
+                <div class="tx-date">${formatDate(t.date)} ${t.note ? '• ' + escapeHtml(t.note) : ''}</div>
+            </div>
+            <div class="tx-points ${t.type}">${t.type === 'earn' ? '+' : '-'}${t.points}</div>
+        </div>
+    `).join('');
+}
+function clearTransactions() {
+    showConfirm('🗑️ হিস্ট্রি মুছুন', 'সব ট্রানজেকশন মুছে ফেলবেন? এটা ফেরানো যাবে না।', () => {
+        transactions = [];
+        saveAll();
+        renderTransactions();
+        showToast('🗑️ হিস্ট্রি মুছে ফেলা হয়েছে', 'success');
+    }, 'মুছুন', true);
+}
+
+/* ============================================================
+   REWARDS
+============================================================ */
+function addReward() {
+    const name = document.getElementById('reward-name').value.trim();
+    const pts = parseInt(document.getElementById('reward-points').value);
+    if (!name || isNaN(pts) || pts <= 0) { showToast('⚠️ নাম ও পয়েন্ট লিখুন', 'error'); return; }
+    rewards.push({ id: Date.now(), name, points: pts });
+    document.getElementById('reward-name').value = '';
+    document.getElementById('reward-points').value = '';
+    saveAll(); renderRewards();
+    showToast('🎁 রিওয়ার্ড যোগ হয়েছে', 'success');
+}
+function renderRewards() {
+    const el = document.getElementById('reward-list');
+    if (rewards.length === 0) { el.innerHTML = '<p class="empty-message">কোন রিওয়ার্ড নেই</p>'; }
+    else {
+        el.innerHTML = rewards.map(r => `
+            <div class="reward-card">
+                <div><strong style="color:var(--secondary-color)">🎁 ${escapeHtml(r.name)}</strong><br><small>${r.points} পয়েন্ট প্রয়োজন</small></div>
+                <div>
+                    <button class="btn-success" onclick="redeemReward(${r.id})">রিডিম</button>
+                    <button class="btn-danger" onclick="deleteReward(${r.id})">🗑️</button>
+                </div>
+            </div>
+        `).join('');
+    }
+    // Redemption history
+    const rh = document.getElementById('redemption-history');
+    if (redemptions.length === 0) { rh.innerHTML = '<p class="empty-message">কোন রিডেম্পশন নেই</p>'; }
+    else {
+        rh.innerHTML = redemptions.slice(0, 50).map(r => `
+            <div class="transaction-item">
+                <div class="tx-info"><div class="tx-name">${escapeHtml(r.customerName)} — ${escapeHtml(r.rewardName)}</div><div class="tx-date">${formatDate(r.date)}</div></div>
+                <div class="tx-points spend">-${r.points}</div>
+            </div>
+        `).join('');
+    }
+}
+function redeemReward(rewardId) {
+    const reward = rewards.find(r => r.id === rewardId);
+    if (!reward) return;
+    // Select customer
+    const options = customers.map((c, i) => ({ value: i, label: `${c.name} (${c.points} pts)` }));
+    if (options.length === 0) { showToast('⚠️ কোন গ্রাহক নেই', 'error'); return; }
+    showPrompt(`🎁 ${reward.name} রিডিম`, [
+        { id: 'cust', label: 'গ্রাহক নির্বাচন করুন', type: 'select', options }
+    ], (v) => {
+        const idx = parseInt(v.cust);
+        const c = customers[idx];
+        if (c.points < reward.points) { showToast(`⚠️ পর্যাপ্ত পয়েন্ট নেই! প্রয়োজন: ${reward.points}`, 'error'); return; }
+        customers[idx].points -= reward.points;
+        redemptions.unshift({
+            id: Date.now(), customerName: c.name, phone: c.phone,
+            rewardName: reward.name, points: reward.points, date: new Date().toISOString()
+        });
+        addTransaction(c.name, c.phone, reward.points, 'spend', `রিডিম: ${reward.name}`);
+        saveAll(); renderAll();
+        showToast(`🎉 ${c.name} "${reward.name}" রিডিম করেছেন!`, 'success');
+        throwConfetti();
+    });
+}
+function deleteReward(id) {
+    showConfirm('🗑️ রিওয়ার্ড ডিলিট', 'এই রিওয়ার্ড ডিলিট করবেন?', () => {
+        rewards = rewards.filter(r => r.id !== id);
+        saveAll(); renderRewards();
+        showToast('🗑️ ডিলিট হয়েছে', 'success');
+    }, 'ডিলিট', true);
+}
+
+/* ============================================================
+   QR CODE
+============================================================ */
+function generateQR() {
+    const phone = document.getElementById('qr-input').value.trim();
+    if (!phone) { showToast('⚠️ ফোন নম্বর লিখুন', 'error'); return; }
+    const c = customers.find(x => x.phone === phone);
+    const text = c ? `LOYALTY:${c.phone}:${c.name}:${c.points}` : `LOYALTY:${phone}`;
+    showQRCode(text);
+}
+function showCustomerQR(index) {
+    const c = customers[index];
+    const text = `LOYALTY:${c.phone}:${c.name}:${c.points}`;
+    showQRCode(text, c.name);
+}
+function showQRCode(text, name = '') {
+    // Simple QR via Google Charts API
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`;
+    const el = document.getElementById('qr-display');
+    el.innerHTML = `<div class="qr-display"><img src="${url}" alt="QR Code" style="border-radius:10px"><p style="margin-top:10px;font-weight:600">${name ? escapeHtml(name) : ''}</p><p style="font-size:0.8rem;color:#999">${escapeHtml(text)}</p></div>`;
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+/* ============================================================
+   WHATSAPP
+============================================================ */
+function sendWhatsApp(index) {
+    const c = customers[index];
+    const msg = settings.welcomeMsg
+        .replace(/{name}/g, c.name)
+        .replace(/{points}/g, c.points);
+    const phone = c.phone.replace(/[^0-9]/g, '');
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+}
+
+/* ============================================================
+   EXPORT / IMPORT / BACKUP
+============================================================ */
+function exportData() {
+    if (customers.length === 0) { showToast('⚠️ কোন ডেটা নেই', 'error'); return; }
+    try {
+        const data = { customers, transactions, rewards, redemptions, settings, exportedAt: new Date().toISOString() };
+        const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const a = document.createElement('a');
+        const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        a.href = str; a.download = `loyalty_backup_${ts}.json`;
+        document.body.appendChild(a); a.click(); a.remove();
+        showToast('📤 এক্সপোর্ট সফল', 'success');
+    } catch (e) { showToast('⚠️ সমস্যা', 'error'); }
+}
+function exportCSV() {
+    if (customers.length === 0) { showToast('⚠️ কোন ডেটা নেই', 'error'); return; }
+    const headers = ['Name', 'Phone', 'Points', 'Tier', 'Birthday', 'Note'];
+    const rows = customers.map(c => [c.name, c.phone, c.points, getTier(c.points).name.replace(/[^\w\s]/g, ''), c.birthday || '', c.note || '']);
+    const csv = '\uFEFF' + [headers, ...rows].map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `customers_${Date.now()}.csv`;
+    a.click();
+    showToast('📊 CSV এক্সপোর্ট সফল', 'success');
+}
+function exportCloud() {
+    // Export as a JSON blob + show instructions for Google Sheets
+    const data = customers.map(c => ({ Name: c.name, Phone: c.phone, Points: c.points, Tier: getTier(c.points).name }));
+    const csv = '\uFEFF' + [Object.keys(data[0] || {}), ...data.map(o => Object.values(o))].map(r => r.map(x => `"${x}"`).join(',')).join('\n');
+    showPrompt('☁️ Google Sheets-এ পাঠান', [
+        { id: 'email', label: 'আপনার ইমেইল (ঐচ্ছিক)', type: 'text', value: '' }
+    ], (v) => {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `sheets_export_${Date.now()}.csv`;
+        a.click();
+        showToast('☁️ ফাইল ডাউনলোড হয়েছে — Google Sheets-এ ইমপোর্ট করুন', 'success', 4000);
+    });
+}
+function importData(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const data = JSON.parse(e.target.result);
+            // Support both array and object format
+            const importedCustomers = Array.isArray(data) ? data : (data.customers || []);
+            if (!Array.isArray(importedCustomers)) { showToast('⚠️ ভুল ফরম্যাট', 'error'); event.target.value = ''; return; }
+            const valid = importedCustomers.filter(x => x && typeof x.name === 'string' && typeof x.phone === 'string' && typeof x.points === 'number');
+            if (valid.length === 0) { showToast('⚠️ বৈধ ডেটা নেই', 'error'); event.target.value = ''; return; }
+            showConfirm('📥 ইমপোর্ট', `${valid.length} টি গ্রাহক ইমপোর্ট হবে এবং ${customers.length} টি প্রতিস্থাপন করবে। চালিয়ে যাবেন?`, () => {
+                customers = valid;
+                if (data.transactions) transactions = data.transactions;
+                if (data.rewards) rewards = data.rewards;
+                if (data.redemptions) redemptions = data.redemptions;
+                if (data.settings) settings = { ...settings, ...data.settings };
+                saveAll(); clearSearch(); renderAll(); loadSettingsToUI();
+                showToast(`✅ ${valid.length} টি ইমপোর্ট সফল`, 'success');
             });
-        }
-
-        // ---------- টেবিল আপডেট (সম্পূর্ণ তালিকা) ----------
-        function updateTable() {
-            // সার্চ মোডে থাকলে সার্চ রেজাল্ট আবার দেখাও
-            if (isSearchActive) {
-                searchCustomer(true);
-                return;
-            }
-            
-            const allCustomers = customers.map((customer, index) => ({
-                customer: customer,
-                originalIndex: index
-            }));
-            renderTable(allCustomers);
-        }
-
-        // ---------- গ্রাহক যোগ ----------
-        function addCustomer() {
-            const nameInput = document.getElementById('cust-name');
-            const phoneInput = document.getElementById('cust-phone');
-            const pointsInput = document.getElementById('cust-points');
-
-            const name = nameInput.value.trim();
-            const phone = phoneInput.value.trim();
-            const points = parseInt(pointsInput.value) || 0;
-
-            if (!name || !phone) {
-                showToast('⚠️ অনুগ্রহ করে নাম এবং ফোন নম্বর লিখুন।');
-                return;
-            }
-
-            if (points < 0) {
-                showToast('⚠️ পয়েন্ট ঋণাত্মক হতে পারে না।');
-                return;
-            }
-
-            // ডুপ্লিকেট ফোন নম্বর চেক
-            const existingIndex = customers.findIndex(c => c.phone === phone);
-            if (existingIndex !== -1) {
-                const confirmUpdate = confirm(`এই ফোন নম্বর (${phone}) ইতিমধ্যে "${customers[existingIndex].name}" নামে নিবন্ধিত।\nআপনি কি পয়েন্ট যোগ করতে চান?`);
-                if (confirmUpdate) {
-                    customers[existingIndex].points += points;
-                    saveCustomers();
-                    clearSearch();
-                    showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে।`);
-                }
-                return;
-            }
-
-            customers.push({
-                name: name,
-                phone: phone,
-                points: points
-            });
-
-            nameInput.value = '';
-            phoneInput.value = '';
-            pointsInput.value = '0';
-
-            saveCustomers();
-            clearSearch();
-            showToast(`🌸 নতুন গ্রাহক "${name}" যোগ হয়েছে।`);
-        }
-
-        // ---------- পয়েন্ট যোগ ----------
-        function addPointsPrompt(index) {
-            if (index < 0 || index >= customers.length) return;
-            const customer = customers[index];
-            const input = prompt(`"${customer.name}" কে কত পয়েন্ট যোগ করতে চান?`, '10');
-            if (input === null) return;
-
-            const trimmed = input.trim();
-            if (trimmed === '' || isNaN(trimmed)) {
-                showToast('⚠️ অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
-                return;
-            }
-
-            const points = parseInt(trimmed, 10);
-            if (points <= 0) {
-                showToast('⚠️ পয়েন্ট ধনাত্মক হতে হবে।');
-                return;
-            }
-
-            customers[index].points += points;
-            saveCustomers();
-            updateTable();
-            showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে।`);
-        }
-
-        // ---------- পয়েন্ট ডিডাক্ট ----------
-        function deductPointsPrompt(index) {
-            if (index < 0 || index >= customers.length) return;
-            const customer = customers[index];
-            const input = prompt(`"${customer.name}" থেকে কত পয়েন্ট ডিডাক্ট করতে চান?\nবর্তমান পয়েন্ট: ${customer.points}`, '10');
-            if (input === null) return;
-
-            const trimmed = input.trim();
-            if (trimmed === '' || isNaN(trimmed)) {
-                showToast('⚠️ অনুগ্রহ করে একটি বৈধ সংখ্যা লিখুন।');
-                return;
-            }
-
-            const points = parseInt(trimmed, 10);
-            if (points <= 0) {
-                showToast('⚠️ পয়েন্ট ধনাত্মক হতে হবে।');
-                return;
-            }
-
-            if (customers[index].points >= points) {
-                customers[index].points -= points;
-                saveCustomers();
-                updateTable();
-                showToast(`✅ ${points} পয়েন্ট ডিডাক্ট হয়েছে।`);
-            } else {
-                showToast(`⚠️ পর্যাপ্ত পয়েন্ট নেই! বর্তমান: ${customers[index].points}`);
-            }
-        }
-
-        // ---------- গ্রাহক এডিট ----------
-        function editCustomerPrompt(index) {
-            if (index < 0 || index >= customers.length) return;
-            const customer = customers[index];
-
-            const newName = prompt('নতুন নাম লিখুন:', customer.name);
-            if (newName === null) return;
-            const trimmedName = newName.trim();
-            if (!trimmedName) {
-                showToast('⚠️ নাম খালি হতে পারে না।');
-                return;
-            }
-
-            const newPhone = prompt('নতুন ফোন নম্বর লিখুন:', customer.phone);
-            if (newPhone === null) return;
-            const trimmedPhone = newPhone.trim();
-            if (!trimmedPhone) {
-                showToast('⚠️ ফোন নম্বর খালি হতে পারে না।');
-                return;
-            }
-
-            // ডুপ্লিকেট চেক (নিজের বাদে)
-            const dupIndex = customers.findIndex((c, i) => i !== index && c.phone === trimmedPhone);
-            if (dupIndex !== -1) {
-                showToast('⚠️ এই ফোন নম্বর অন্য গ্রাহকের কাছে আছে।');
-                return;
-            }
-
-            const newPointsStr = prompt('নতুন পয়েন্ট লিখুন:', customer.points);
-            if (newPointsStr === null) return;
-            const newPoints = parseInt(newPointsStr, 10);
-            if (isNaN(newPoints) || newPoints < 0) {
-                showToast('⚠️ বৈধ পয়েন্ট লিখুন।');
-                return;
-            }
-
-            customers[index] = {
-                name: trimmedName,
-                phone: trimmedPhone,
-                points: newPoints
-            };
-
-            saveCustomers();
-            updateTable();
-            showToast('✏️ গ্রাহকের তথ্য আপডেট হয়েছে।');
-        }
-
-        // ---------- গ্রাহক ডিলিট ----------
-        function deleteCustomer(index) {
-            if (index < 0 || index >= customers.length) return;
-            const customer = customers[index];
-            if (confirm(`আপনি কি নিশ্চিত যে "${customer.name}" (${customer.phone}) কে ডিলিট করতে চান?`)) {
-                customers.splice(index, 1);
-                saveCustomers();
-                // সার্চ অ্যাক্টিভ থাকলে রিসেট করো
-                if (isSearchActive) {
-                    clearSearch();
-                } else {
-                    updateTable();
-                }
-                showToast('🗑️ গ্রাহক ডিলিট হয়েছে।');
-            }
-        }
-
-        // ---------- সার্চ (সম্পূর্ণ সংশোধিত) ----------
-        function searchCustomer(silent = false) {
-            const searchInput = document.getElementById('search-input');
-            const query = searchInput.value.trim().toLowerCase();
-            const searchInfo = document.getElementById('search-info');
-
-            if (!query) {
-                if (!silent) showToast('⚠️ অনুগ্রহ করে কিছু লিখুন।');
-                return;
-            }
-
-            // সার্চ ম্যাচ খোঁজা - নাম অথবা ফোন নম্বরে
-            const matchedItems = [];
-            customers.forEach((customer, index) => {
-                const nameMatch = customer.name.toLowerCase().includes(query);
-                const phoneMatch = customer.phone.toLowerCase().includes(query);
-                if (nameMatch || phoneMatch) {
-                    matchedItems.push({ customer, originalIndex: index });
-                }
-            });
-
-            isSearchActive = true;
-
-            if (matchedItems.length === 0) {
-                searchInfo.innerHTML = `
-                    <div class="search-result-info" style="background:#ffebee; color:#b71c1c;">
-                        🔍 "<strong>${escapeHtml(query)}</strong>" এর জন্য কোন গ্রাহক পাওয়া যায়নি।
-                        <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
-                    </div>
-                `;
-                renderTable([], `🔍 "${query}" এর জন্য কোন গ্রাহক পাওয়া যায়নি।`);
-            } else {
-                searchInfo.innerHTML = `
-                    <div class="search-result-info">
-                        🔍 "<strong>${escapeHtml(query)}</strong>" এর জন্য <strong>${matchedItems.length}</strong> জন গ্রাহক পাওয়া গেছে।
-                        <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
-                    </div>
-                `;
-                renderTable(matchedItems);
-            }
-        }
-
-        // ---------- সার্চ রিসেট ----------
-        function clearSearch() {
-            document.getElementById('search-input').value = '';
-            document.getElementById('search-info').innerHTML = '';
-            isSearchActive = false;
-            
-            const allCustomers = customers.map((customer, index) => ({
-                customer: customer,
-                originalIndex: index
-            }));
-            renderTable(allCustomers);
-        }
-
-        // ---------- এক্সপোর্ট ----------
-        function exportData() {
-            if (customers.length === 0) {
-                showToast('⚠️ এক্সপোর্ট করার জন্য কোন ডেটা নেই।');
-                return;
-            }
-
-            try {
-                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(customers, null, 2));
-                const downloadAnchorNode = document.createElement('a');
-                const timestamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-                downloadAnchorNode.setAttribute("href", dataStr);
-                downloadAnchorNode.setAttribute("download", `customer_loyalty_data_${timestamp}.json`);
-                document.body.appendChild(downloadAnchorNode);
-                downloadAnchorNode.click();
-                downloadAnchorNode.remove();
-                showToast('📤 ডেটা এক্সপোর্ট সফল হয়েছে।');
-            } catch (error) {
-                console.error('এক্সপোর্ট সমস্যা:', error);
-                showToast('⚠️ এক্সপোর্ট করতে সমস্যা হয়েছে!');
-            }
-        }
-
-        // ---------- ইমপোর্ট ----------
-        function importData(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                try {
-                    const importedData = JSON.parse(e.target.result);
-
-                    if (!Array.isArray(importedData)) {
-                        showToast('⚠️ ভুল ফাইল ফরম্যাট! JSON অ্যারে প্রত্যাশিত।');
-                        event.target.value = '';
-                        return;
-                    }
-
-                    const validData = [];
-                    let invalidCount = 0;
-
-                    for (const item of importedData) {
-                        if (item && typeof item === 'object' &&
-                            typeof item.name === 'string' &&
-                            typeof item.phone === 'string' &&
-                            typeof item.points === 'number' &&
-                            !isNaN(item.points) && item.points >= 0) {
-                            validData.push({
-                                name: item.name.trim(),
-                                phone: item.phone.trim(),
-                                points: Math.floor(item.points)
-                            });
-                        } else {
-                            invalidCount++;
-                        }
-                    }
-
-                    if (validData.length === 0) {
-                        showToast('⚠️ ফাইলে কোন বৈধ ডেটা নেই!');
-                        event.target.value = '';
-                        return;
-                    }
-
-                    const confirmImport = confirm(
-                        `${validData.length} টি গ্রাহক রেকর্ড ইমপোর্ট হবে।\n` +
-                        `এটি বর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবে।\n` +
-                        (invalidCount > 0 ? `\n(${invalidCount} টি অবৈধ এন্ট্রি বাদ পড়বে)` : '') +
-                        `\n\nআপনি কি চালিয়ে যেতে চান?`
-                    );
-
-                    if (!confirmImport) {
-                        event.target.value = '';
-                        return;
-                    }
-
-                    customers = validData;
-                    saveCustomers();
-                    clearSearch();
-                    showToast(`✅ ${validData.length} টি রেকর্ড ইমপোর্ট সফল।`);
-
-                } catch (error) {
-                    console.error('ইমপোর্ট সমস্যা:', error);
-                    showToast('⚠️ JSON ফাইল পার্স করতে সমস্যা!');
-                } finally {
-                    event.target.value = '';
-                }
-            };
-
-            reader.onerror = function() {
-                showToast('⚠️ ফাইল পড়তে সমস্যা!');
-                event.target.value = '';
-            };
-
-            reader.readAsText(file);
-        }
-
-        // ---------- ব্যাকআপ তৈরি ----------
-        function createBackup() {
-            if (customers.length === 0) {
-                showToast('⚠️ ব্যাকআপ করার জন্য কোন ডেটা নেই।');
-                return;
-            }
-            try {
-                localStorage.setItem(BACKUP_KEY, JSON.stringify(customers));
-                const time = new Date().toLocaleString('bn-BD');
-                showToast(`💾 ব্যাকআপ সেভ হয়েছে (${time})`);
-            } catch (error) {
-                console.error('ব্যাকআপ সমস্যা:', error);
-                showToast('⚠️ ব্যাকআপ সংরক্ষণ ব্যর্থ!');
-            }
-        }
-
-        // ---------- লোকাল ব্যাকআপ থেকে ফেরত ----------
-        function restoreBackup() {
-            try {
-                const storedBackup = localStorage.getItem(BACKUP_KEY);
-                if (!storedBackup) {
-                    // যদি লোকাল ব্যাকআপ না থাকে, ফাইল সিলেক্ট করতে বলো
-                    if (confirm('লোকাল স্টোরেজে কোন ব্যাকআপ নেই।\nআপনি কি একটি ব্যাকআপ ফাইল সিলেক্ট করতে চান?')) {
-                        document.getElementById('restore-file').click();
-                    }
-                    return;
-                }
-
-                const backupData = JSON.parse(storedBackup);
-                if (!Array.isArray(backupData)) {
-                    showToast('⚠️ ব্যাকআপ ডেটা বৈধ নয়!');
-                    return;
-                }
-
-                if (!confirm(`লোকাল ব্যাকআপে ${backupData.length} টি রেকর্ড আছে।\nবর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবেন?`)) {
-                    return;
-                }
-
-                customers = backupData;
-                saveCustomers();
-                clearSearch();
-                showToast('🔄 লোকাল ব্যাকআপ থেকে ডেটা ফেরত এসেছে।');
-
-            } catch (error) {
-                console.error('রিস্টোর সমস্যা:', error);
-                showToast('⚠️ রিস্টোর করতে সমস্যা হয়েছে!');
-            }
-        }
-
-        // ---------- ফাইল থেকে ব্যাকআপ ফেরত ----------
-        function restoreFromFile(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                try {
-                    const backupData = JSON.parse(e.target.result);
-                    if (!Array.isArray(backupData)) {
-                        showToast('⚠️ ভুল ব্যাকআপ ফাইল!');
-                        event.target.value = '';
-                        return;
-                    }
-
-                    const validData = backupData.filter(item =>
-                        item && typeof item === 'object' &&
-                        typeof item.name === 'string' &&
-                        typeof item.phone === 'string' &&
-                        typeof item.points === 'number' && !isNaN(item.points)
-                    );
-
-                    if (validData.length === 0) {
-                        showToast('⚠️ ব্যাকআপ ফাইলে কোন বৈধ ডেটা নেই!');
-                        event.target.value = '';
-                        return;
-                    }
-
-                    if (!confirm(`ব্যাকআপ ফাইলে ${validData.length} টি রেকর্ড আছে।\nবর্তমান ${customers.length} টি রেকর্ড প্রতিস্থাপন করবেন?`)) {
-                        event.target.value = '';
-                        return;
-                    }
-
-                    customers = validData;
-                    saveCustomers();
-                    clearSearch();
-                    showToast('🔄 ব্যাকআপ ফাইল থেকে ডেটা ফেরত এসেছে।');
-
-                } catch (error) {
-                    console.error('রিস্টোর সমস্যা:', error);
-                    showToast('⚠️ ব্যাকআপ ফাইল পার্স করা যায়নি!');
-                } finally {
-                    event.target.value = '';
-                }
-            };
-
-            reader.onerror = function() {
-                showToast('⚠️ ফাইল পড়তে সমস্যা!');
-                event.target.value = '';
-            };
-
-            reader.readAsText(file);
-        }
-
-        // ---------- এন্টার কী হ্যান্ডলিং ----------
-        function handleEnterKey(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addCustomer();
-            }
-        }
-
-        // ---------- ইনিশিয়ালাইজ ----------
-        function init() {
-            loadCustomers();
-            updateTable();
-
-            // Enter key handlers
-            document.getElementById('cust-name').addEventListener('keypress', handleEnterKey);
-            document.getElementById('cust-phone').addEventListener('keypress', handleEnterKey);
-            document.getElementById('cust-points').addEventListener('keypress', handleEnterKey);
-
-            // সার্চ ফিল্ডে Enter চাপলে সার্চ হবে
-            document.getElementById('search-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    searchCustomer();
-                }
-            });
-
-            // সার্চ ইনপুটে রিয়েল-টাইম সার্চ (ঐচ্ছিক)
-            document.getElementById('search-input').addEventListener('input', function() {
-                const query = this.value.trim();
-                if (query === '') {
-                    clearSearch();
-                } else {
-                    searchCustomer(true);
-                }
-            });
-        }
-
-        // Start the app
-        init();
-    </script>
+        } catch (err) { showToast('⚠️ ফাইল পড়া যায়নি', 'error'); }
+        finally { event.target.value = ''; }
+    };
+    reader.readAsText(file);
+}
+function createBackup() {
+    if (customers.length === 0) { showToast('⚠️ কোন ডেটা নেই', 'error'); return; }
+    localStorage.setItem(BACKUP_KEY, JSON.stringify({ customers, transactions, rewards, redemptions, settings }));
+    showToast('💾 ব্যাকআপ সেভ হয়েছে', 'success');
+}
+function restoreBackup() {
+    const b = localStorage.getItem(BACKUP_KEY);
+    if (!b) { showToast('⚠️ কোন ব্যাকআপ নেই', 'error'); return; }
+    const data = JSON.parse(b);
+    showConfirm('🔄 রিস্টোর', `${data.customers.length} টি রেকর্ড রিস্টোর করবেন?`, () => {
+        customers = data.customers;
+        transactions = data.transactions || [];
+        rewards = data.rewards || [];
+        redemptions = data.redemptions || [];
+        if (data.settings) settings = { ...settings, ...data.settings };
+        saveAll(); clearSearch(); renderAll(); loadSettingsToUI();
+        showToast('🔄 রিস্টোর সফল', 'success');
+    });
+}
+
+/* ============================================================
+   AUTO-SAVE (every 30s)
+============================================================ */
+setInterval(() => { saveAll(); }, 30000);
+
+/* ============================================================
+   RENDER ALL
+============================================================ */
+function renderAll() {
+    updateTable();
+    if (document.getElementById('tab-dashboard').classList.contains('active')) renderDashboard();
+    if (document.getElementById('tab-transactions').classList.contains('active')) renderTransactions();
+    if (document.getElementById('tab-rewards').classList.contains('active')) renderRewards();
+}
+
+/* ============================================================
+   INIT
+============================================================ */
+function init() {
+    loadAll();
+    // Apply dark mode
+    if (darkMode) {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-btn').textContent = '☀️';
+    }
+    // Apply saved language
+    document.getElementById('lang-btn').textContent = currentLang === 'bn' ? 'EN' : 'বাং';
+
+    // Enter key handlers
+    ['cust-name', 'cust-phone', 'cust-points'].forEach(id => {
+        document.getElementById(id).addEventListener('keypress', e => {
+            if (e.key === 'Enter') { e.preventDefault(); addCustomer(); }
+        });
+    });
+    document.getElementById('search-input').addEventListener('keypress', e => {
+        if (e.key === 'Enter') { e.preventDefault(); searchCustomer(); }
+    });
+    document.getElementById('search-input').addEventListener('input', function () {
+        if (this.value.trim() === '') clearSearch();
+        else searchCustomer(true);
+    });
+
+    applyLanguage();
+    renderAll();
+}
+
+// Kick off
+init();
+</script>
 </body>
-</html>
+    </html>
