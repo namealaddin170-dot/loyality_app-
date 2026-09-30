@@ -17,6 +17,10 @@
     --info: #2196f3;
     --danger: #e53935;
     --warning: #ff9800;
+    --gold: #ffd700;
+    --silver: #c0c0c0;
+    --bronze: #cd7f32;
+    --platinum: #e5e4e2;
     --card-bg: #ffffff;
     --border-color: #fce4ec;
     --shadow: rgba(0, 0, 0, 0.1);
@@ -25,6 +29,7 @@ body.dark-mode {
     --primary-bg: #1a1a2e;
     --primary-color: #ff4081;
     --secondary-color: #ff80ab;
+    --accent-color: #d81b60;
     --text-color: #e0e0e0;
     --white: #16213e;
     --light-bg: #0f3460;
@@ -70,8 +75,17 @@ h1 {
     color: var(--secondary-color);
     font-size: 1.8rem;
     flex: 1;
+    animation: titleGlow 3s ease-in-out infinite alternate;
 }
-.header-controls { display: flex; gap: 10px; align-items: center; }
+@keyframes titleGlow {
+    from { text-shadow: 0 0 5px rgba(216, 27, 96, 0.2); }
+    to { text-shadow: 0 0 20px rgba(216, 27, 96, 0.5); }
+}
+.header-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
 .icon-btn {
     width: 45px; height: 45px;
     border-radius: 50%;
@@ -90,6 +104,7 @@ h1 {
     background: var(--primary-color);
     color: white;
     transform: translateY(-3px) rotate(10deg);
+    box-shadow: 0 6px 15px rgba(216, 27, 96, 0.4);
 }
 .lang-toggle {
     padding: 8px 14px;
@@ -104,6 +119,7 @@ h1 {
 }
 .lang-toggle:hover { background: var(--primary-color); color: white; }
 
+/* Navigation Tabs */
 .tabs {
     display: flex;
     gap: 8px;
@@ -122,12 +138,29 @@ h1 {
     border-radius: 10px;
     transition: all 0.3s ease;
     font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+}
+.tab-btn::before {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 3px;
+    background: var(--primary-color);
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 .tab-btn:hover { background: var(--light-bg); transform: translateY(-2px); }
 .tab-btn.active {
     background: var(--primary-color);
     color: white;
     box-shadow: 0 6px 20px rgba(216, 27, 96, 0.4);
+    animation: tabPop 0.4s ease;
+}
+@keyframes tabPop {
+    0% { transform: scale(0.9); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
 }
 .tab-content { display: none; animation: fadeSlideIn 0.5s ease; }
 .tab-content.active { display: block; }
@@ -143,8 +176,13 @@ h1 {
     border-radius: 15px;
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
+    animation: sectionAppear 0.5s ease backwards;
 }
 .section:hover { box-shadow: 0 8px 25px var(--shadow); transform: translateY(-2px); }
+@keyframes sectionAppear {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 .section-title {
     font-size: 1rem;
     font-weight: 700;
@@ -173,6 +211,7 @@ input, select, textarea {
 input:focus, select:focus, textarea:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.15);
+    transform: translateY(-2px);
 }
 button {
     padding: 12px 20px;
@@ -180,14 +219,27 @@ button {
     border-radius: 10px;
     cursor: pointer;
     font-weight: bold;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     color: var(--white);
     font-size: 0.9rem;
     white-space: nowrap;
+    position: relative;
+    overflow: hidden;
 }
+button::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    width: 0; height: 0;
+    background: rgba(255,255,255,0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.4s, height 0.4s;
+}
+button:active::after { width: 300px; height: 300px; }
 button:active { transform: scale(0.96); }
 .btn-add { background: linear-gradient(135deg, #d81b60, #880e4f); }
-.btn-add:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(216, 27, 96, 0.4); }
+.btn-add:hover { background: linear-gradient(135deg, #880e4f, #d81b60); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(216, 27, 96, 0.4); }
 .btn-search { background: linear-gradient(135deg, #2196f3, #0d47a1); }
 .btn-search:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4); }
 .btn-clear { background: #9e9e9e; }
@@ -195,22 +247,22 @@ button:active { transform: scale(0.96); }
 .btn-action {
     background: linear-gradient(135deg, var(--accent-color), #ff4081);
     color: var(--secondary-color);
-    padding: 6px 10px;
-    font-size: 0.85em;
+    padding: 6px 12px;
+    font-size: 0.8em;
     margin: 2px;
     border-radius: 7px;
-    font-weight: 700;
+    font-weight: 600;
 }
-.btn-action:hover { color: white; transform: translateY(-2px); }
+.btn-action:hover { background: linear-gradient(135deg, #ff4081, var(--accent-color)); color: white; transform: translateY(-2px) scale(1.05); }
 .btn-danger { background: linear-gradient(135deg, #e53935, #b71c1c); color: white; }
-.btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); color: white; }
-.btn-info { background: linear-gradient(135deg, #2196f3, #1565c0); color: white; }
-.btn-warning { background: linear-gradient(135deg, #ff9800, #e65100); color: white; }
-.btn-purple { background: linear-gradient(135deg, #9c27b0, #6a1b9a); color: white; }
-.btn-export { background: linear-gradient(135deg, #2196f3, #1565c0); }
-.btn-import { background: linear-gradient(135deg, #4caf50, #2e7d32); }
-.btn-backup { background: linear-gradient(135deg, #ff9800, #e65100); }
-.btn-restore { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+.btn-danger:hover { background: linear-gradient(135deg, #b71c1c, #e53935); transform: translateY(-2px) scale(1.05); }
+.btn-success { background: linear-gradient(135deg, #4caf50, #2e7d32); }
+.btn-info { background: linear-gradient(135deg, #2196f3, #1565c0); }
+.btn-warning { background: linear-gradient(135deg, #ff9800, #e65100); }
+.btn-purple { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+.btn-export, .btn-import, .btn-backup, .btn-restore, .btn-success, .btn-info, .btn-warning, .btn-purple {
+    transition: all 0.3s ease;
+}
 .btn-export:hover, .btn-import:hover, .btn-backup:hover, .btn-restore:hover, .btn-success:hover, .btn-info:hover, .btn-warning:hover, .btn-purple:hover {
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0,0,0,0.2);
@@ -219,9 +271,9 @@ button:active { transform: scale(0.96); }
 .top-actions button { flex: 1; min-width: 140px; }
 table { width: 100%; border-collapse: collapse; margin-top: 15px; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 8px var(--shadow); }
 th, td { padding: 14px 12px; text-align: left; border-bottom: 1px solid var(--border-color); }
-th { background: var(--light-bg); color: var(--secondary-color); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; }
+th { background: var(--light-bg); color: var(--secondary-color); font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; }
 tr { transition: all 0.3s ease; }
-tr:hover { background: rgba(216, 27, 96, 0.05); }
+tr:hover { background: rgba(216, 27, 96, 0.05); transform: scale(1.005); }
 .actions-cell { display: flex; flex-wrap: wrap; gap: 4px; }
 .empty-message { text-align: center; padding: 40px 20px; color: #999; font-style: italic; }
 .points-display { font-weight: 700; color: var(--secondary-color); font-size: 1.1rem; }
@@ -237,8 +289,14 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     align-items: center;
     flex-wrap: wrap;
     gap: 10px;
+    animation: slideDown 0.4s ease;
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
+/* Tier badges */
 .tier-badge {
     display: inline-block;
     padding: 4px 12px;
@@ -246,12 +304,19 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     font-size: 0.75rem;
     font-weight: 700;
     text-transform: uppercase;
+    letter-spacing: 0.5px;
+    animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
 }
 .tier-bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); color: white; }
 .tier-silver { background: linear-gradient(135deg, #c0c0c0, #808080); color: #333; }
 .tier-gold { background: linear-gradient(135deg, #ffd700, #ff8c00); color: #333; }
 .tier-platinum { background: linear-gradient(135deg, #e5e4e2, #a8a8a8); color: #333; }
 
+/* Stats Cards */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -265,17 +330,23 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     border-radius: 15px;
     text-align: center;
     box-shadow: 0 8px 20px rgba(216, 27, 96, 0.3);
+    animation: cardFloat 3s ease-in-out infinite;
     transition: all 0.3s ease;
 }
-.stat-card:nth-child(2) { background: linear-gradient(135deg, #2196f3, #0d47a1); }
-.stat-card:nth-child(3) { background: linear-gradient(135deg, #4caf50, #2e7d32); }
-.stat-card:nth-child(4) { background: linear-gradient(135deg, #ff9800, #e65100); }
-.stat-card:nth-child(5) { background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
-.stat-card:nth-child(6) { background: linear-gradient(135deg, #00bcd4, #00838f); }
+.stat-card:nth-child(2) { animation-delay: 0.3s; background: linear-gradient(135deg, #2196f3, #0d47a1); }
+.stat-card:nth-child(3) { animation-delay: 0.6s; background: linear-gradient(135deg, #4caf50, #2e7d32); }
+.stat-card:nth-child(4) { animation-delay: 0.9s; background: linear-gradient(135deg, #ff9800, #e65100); }
+.stat-card:nth-child(5) { animation-delay: 1.2s; background: linear-gradient(135deg, #9c27b0, #6a1b9a); }
+.stat-card:nth-child(6) { animation-delay: 1.5s; background: linear-gradient(135deg, #00bcd4, #00838f); }
+@keyframes cardFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+}
 .stat-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
 .stat-value { font-size: 2rem; font-weight: 800; margin-bottom: 5px; }
 .stat-label { font-size: 0.85rem; opacity: 0.9; }
 
+/* Modal */
 .modal-overlay {
     position: fixed;
     top: 0; left: 0;
@@ -314,7 +385,11 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     padding-bottom: 15px;
     border-bottom: 2px solid var(--border-color);
 }
-.modal-title { font-size: 1.2rem; font-weight: 700; color: var(--secondary-color); }
+.modal-title {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+}
 .modal-close {
     background: transparent;
     border: none;
@@ -341,9 +416,15 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     width: 100%;
     margin-bottom: 15px;
 }
-.modal-footer { display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+.modal-footer {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
 .modal-footer button { min-width: 100px; }
 
+/* Toast */
 .toast {
     position: fixed;
     bottom: 30px;
@@ -362,18 +443,36 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     max-width: 90vw;
     text-align: center;
     font-size: 0.95rem;
+    border-left: 5px solid var(--accent-color);
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-.toast.success { background: linear-gradient(135deg, #2e7d32, #4caf50); }
-.toast.error { background: linear-gradient(135deg, #b71c1c, #e53935); }
+.toast.success { background: linear-gradient(135deg, #2e7d32, #4caf50); border-left-color: #fff; }
+.toast.error { background: linear-gradient(135deg, #b71c1c, #e53935); border-left-color: #fff; }
 
+/* Birthday highlight */
 .birthday-highlight {
-    background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), transparent) !important;
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.15), transparent) !important;
+    position: relative;
+}
+.birthday-highlight::before {
+    content: '🎂';
+    position: absolute;
+    left: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.1rem;
+    animation: bounceCake 1s infinite;
+}
+@keyframes bounceCake {
+    0%, 100% { transform: translateY(-50%); }
+    50% { transform: translateY(-65%); }
 }
 
+/* Confetti for celebrations */
 .confetti {
     position: fixed;
     width: 10px; height: 10px;
+    background: var(--accent-color);
     animation: confettiFall 3s linear forwards;
     z-index: 999;
     pointer-events: none;
@@ -383,6 +482,28 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
 }
 
+/* Progress bar for tier */
+.tier-progress {
+    width: 100%;
+    height: 6px;
+    background: var(--border-color);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+.tier-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+    border-radius: 3px;
+    transition: width 0.6s ease;
+    animation: progressShine 2s ease-in-out infinite;
+}
+@keyframes progressShine {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.3); }
+}
+
+/* Transaction list */
 .transaction-item {
     padding: 12px 15px;
     background: var(--white);
@@ -393,10 +514,15 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     align-items: center;
     border-left: 4px solid var(--primary-color);
     transition: all 0.3s ease;
+    animation: slideIn 0.4s ease backwards;
 }
 .transaction-item:hover { transform: translateX(5px); box-shadow: 0 4px 12px var(--shadow); }
 .transaction-item.earn { border-left-color: var(--success); }
 .transaction-item.spend { border-left-color: var(--danger); }
+@keyframes slideIn {
+    from { opacity: 0; transform: translateX(-20px); }
+    to { opacity: 1; transform: translateX(0); }
+}
 .tx-info { flex: 1; }
 .tx-name { font-weight: 700; color: var(--secondary-color); }
 .tx-date { font-size: 0.75rem; color: #999; }
@@ -404,36 +530,8 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
 .tx-points.earn { color: var(--success); }
 .tx-points.spend { color: var(--danger); }
 
+/* Settings */
 .settings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-
-.qr-display {
-    text-align: center;
-    padding: 20px;
-    background: white;
-    border-radius: 15px;
-    margin: 15px 0;
-    color: #333;
-}
-
-.reward-card {
-    background: var(--white);
-    border: 2px dashed var(--primary-color);
-    padding: 15px;
-    border-radius: 12px;
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-.reward-card:hover { transform: scale(1.02); border-style: solid; }
-
-@media print {
-    .tabs, .header-controls, .top-actions, .actions-cell, button { display: none !important; }
-    body { background: white; padding: 0; }
-}
 @media (max-width: 600px) {
     .settings-grid { grid-template-columns: 1fr; }
     .container { padding: 20px 15px; }
@@ -445,12 +543,43 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     .tab-btn { padding: 8px 12px; font-size: 0.75rem; }
     .modal { padding: 20px; }
 }
+
+/* QR Code display */
+.qr-display {
+    text-align: center;
+    padding: 20px;
+    background: white;
+    border-radius: 15px;
+    margin: 15px 0;
+}
+.qr-display canvas, .qr-display img { max-width: 200px; }
+
+/* Reward card */
+.reward-card {
+    background: linear-gradient(135deg, var(--light-bg), var(--white));
+    border: 2px dashed var(--primary-color);
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+.reward-card:hover { transform: scale(1.02); border-style: solid; box-shadow: 0 8px 20px var(--shadow); }
+
+/* Print styles */
+@media print {
+    .tabs, .header-controls, .top-actions, .actions-cell, button { display: none !important; }
+    body { background: white; padding: 0; }
+    .container { box-shadow: none; }
+}
 </style>
 </head>
 <body>
 <div class="container">
     <div class="header-row">
-        <h1>🎀 COSMETIC REWARDS CLUB 🎀</h1>
+        <h1 id="app-title">🎀 COSMETIC REWARDS CLUB 🎀</h1>
         <div class="header-controls">
             <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">EN</button>
             <button class="icon-btn" onclick="toggleDarkMode()" id="dark-btn" title="ডার্ক মোড">🌙</button>
@@ -458,53 +587,54 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
         </div>
     </div>
 
+    <!-- Navigation Tabs -->
     <div class="tabs">
-        <button class="tab-btn active" data-tab="customers" onclick="switchTab('customers')">👥 গ্রাহক</button>
-        <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard')">📊 ড্যাশবোর্ড</button>
-        <button class="tab-btn" data-tab="transactions" onclick="switchTab('transactions')">📜 হিস্ট্রি</button>
-        <button class="tab-btn" data-tab="rewards" onclick="switchTab('rewards')">🎁 রিওয়ার্ড</button>
-        <button class="tab-btn" data-tab="tools" onclick="switchTab('tools')">💾 টুলস</button>
-        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">⚙️ সেটিংস</button>
+        <button class="tab-btn active" data-tab="customers" onclick="switchTab('customers')"><span class="tab-text">👥 গ্রাহক</span></button>
+        <button class="tab-btn" data-tab="dashboard" onclick="switchTab('dashboard')"><span class="tab-text">📊 ড্যাশবোর্ড</span></button>
+        <button class="tab-btn" data-tab="transactions" onclick="switchTab('transactions')"><span class="tab-text">📜 হিস্ট্রি</span></button>
+        <button class="tab-btn" data-tab="rewards" onclick="switchTab('rewards')"><span class="tab-text">🎁 রিওয়ার্ড</span></button>
+        <button class="tab-btn" data-tab="tools" onclick="switchTab('tools')"><span class="tab-text">💾 টুলস</span></button>
+        <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')"><span class="tab-text">⚙️ সেটিংস</span></button>
     </div>
 
     <!-- ============ CUSTOMERS TAB ============ -->
     <div class="tab-content active" id="tab-customers">
         <div class="section">
-            <div class="section-title">➕ নতুন গ্রাহক যোগ করুন</div>
+            <div class="section-title"><span class="sec-title-text">➕ নতুন গ্রাহক যোগ করুন</span></div>
             <div class="form-group">
                 <input type="text" id="cust-name" placeholder="গ্রাহকের নাম">
                 <input type="tel" id="cust-phone" placeholder="ফোন নম্বর">
                 <input type="number" id="cust-points" placeholder="পয়েন্ট" min="0" value="0">
                 <input type="date" id="cust-birthday" title="জন্মতারিখ (ঐচ্ছিক)">
-                <button class="btn-add" onclick="addCustomer()">গ্রাহক যোগ করুন</button>
+                <button class="btn-add" onclick="addCustomer()" id="btn-add-cust">গ্রাহক যোগ করুন</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">🔍 গ্রাহক খুঁজুন</div>
+            <div class="section-title"><span class="sec-title-text">🔍 গ্রাহক খুঁজুন</span></div>
             <div class="form-group">
                 <input type="text" id="search-input" placeholder="নাম বা ফোন নম্বর দিয়ে খুঁজুন...">
-                <button class="btn-search" onclick="searchCustomer()">সার্চ করুন</button>
-                <button class="btn-clear" onclick="clearSearch()">রিসেট</button>
+                <button class="btn-search" onclick="searchCustomer()" id="btn-search">সার্চ করুন</button>
+                <button class="btn-clear" onclick="clearSearch()" id="btn-reset">রিসেট</button>
             </div>
             <div id="search-info"></div>
         </div>
 
         <div class="section">
-            <div class="section-title">👥 গ্রাহক তালিকা (<span id="customer-count">0</span>)</div>
+            <div class="section-title"><span class="sec-title-text">👥 গ্রাহক তালিকা</span> (<span id="customer-count">0</span>)</div>
             <div style="overflow-x:auto">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>নাম</th>
-                            <th>ফোন</th>
-                            <th>পয়েন্ট</th>
-                            <th>লেভেল</th>
-                            <th>অ্যাকশন</th>
-                        </tr>
-                    </thead>
-                    <tbody id="customer-table"></tbody>
-                </table>
+            <table>
+                <thead>
+                    <tr>
+                        <th>নাম</th>
+                        <th>ফোন</th>
+                        <th>পয়েন্ট</th>
+                        <th>লেভেল</th>
+                        <th>অ্যাকশন</th>
+                    </tr>
+                </thead>
+                <tbody id="customer-table"></tbody>
+            </table>
             </div>
         </div>
     </div>
@@ -512,7 +642,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     <!-- ============ DASHBOARD TAB ============ -->
     <div class="tab-content" id="tab-dashboard">
         <div class="section">
-            <div class="section-title">📊 পরিসংখ্যান</div>
+            <div class="section-title"><span class="sec-title-text">📊 পরিসংখ্যান</span></div>
             <div class="stats-grid">
                 <div class="stat-card"><div class="stat-value" id="stat-total">0</div><div class="stat-label">মোট গ্রাহক</div></div>
                 <div class="stat-card"><div class="stat-value" id="stat-points">0</div><div class="stat-label">মোট পয়েন্ট</div></div>
@@ -523,11 +653,11 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
             </div>
         </div>
         <div class="section">
-            <div class="section-title">🏆 টপ ৫ গ্রাহক</div>
+            <div class="section-title"><span class="sec-title-text">🏆 টপ ৫ গ্রাহক</span></div>
             <div id="top-customers"></div>
         </div>
         <div class="section">
-            <div class="section-title">📈 সাম্প্রতিক কার্যক্রম (৭ দিন)</div>
+            <div class="section-title"><span class="sec-title-text">📈 সাম্প্রতিক কার্যক্রম (৭ দিন)</span></div>
             <div id="recent-activity"></div>
         </div>
     </div>
@@ -535,7 +665,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     <!-- ============ TRANSACTIONS TAB ============ -->
     <div class="tab-content" id="tab-transactions">
         <div class="section">
-            <div class="section-title">📜 পয়েন্ট ট্রানজেকশন হিস্ট্রি</div>
+            <div class="section-title"><span class="sec-title-text">📜 পয়েন্ট ট্রানজেকশন হিস্ট্রি</span></div>
             <div class="form-group" style="margin-bottom:15px">
                 <input type="text" id="tx-search" placeholder="গ্রাহকের নাম দিয়ে খুঁজুন..." oninput="renderTransactions()">
                 <select id="tx-filter" onchange="renderTransactions()">
@@ -543,7 +673,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
                     <option value="earn">শুধু যোগ</option>
                     <option value="spend">শুধু খরচ</option>
                 </select>
-                <button class="btn-clear" onclick="clearTransactions()">হিস্ট্রি মুছুন</button>
+                <button class="btn-clear" onclick="clearTransactions()" id="btn-clear-tx">হিস্ট্রি মুছুন</button>
             </div>
             <div id="transaction-list"></div>
         </div>
@@ -552,16 +682,16 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     <!-- ============ REWARDS TAB ============ -->
     <div class="tab-content" id="tab-rewards">
         <div class="section">
-            <div class="section-title">🎁 রিওয়ার্ড ম্যানেজমেন্ট</div>
+            <div class="section-title"><span class="sec-title-text">🎁 রিওয়ার্ড ম্যানেজমেন্ট</span></div>
             <div class="form-group" style="margin-bottom:15px">
                 <input type="text" id="reward-name" placeholder="রিওয়ার্ডের নাম (যেমন: ফ্রি লিপস্টিক)">
                 <input type="number" id="reward-points" placeholder="প্রয়োজনীয় পয়েন্ট" min="1">
-                <button class="btn-success" onclick="addReward()">রিওয়ার্ড যোগ</button>
+                <button class="btn-success" onclick="addReward()" id="btn-add-reward">রিওয়ার্ড যোগ</button>
             </div>
             <div id="reward-list"></div>
         </div>
         <div class="section">
-            <div class="section-title">🎯 রিডেম্পশন হিস্ট্রি</div>
+            <div class="section-title"><span class="sec-title-text">🎯 রিডেম্পশন হিস্ট্রি</span></div>
             <div id="redemption-history"></div>
         </div>
     </div>
@@ -569,23 +699,23 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     <!-- ============ TOOLS TAB ============ -->
     <div class="tab-content" id="tab-tools">
         <div class="section">
-            <div class="section-title">💾 ডেটা ব্যাকআপ এবং টুলস</div>
+            <div class="section-title"><span class="sec-title-text">💾 ডেটা ব্যাকআপ এবং টুলস</span></div>
             <div class="top-actions">
-                <button class="btn-export" onclick="exportData()">📤 এক্সপোর্ট (JSON)</button>
-                <button class="btn-import" onclick="document.getElementById('import-file').click()">📥 ইমপোর্ট (JSON)</button>
-                <button class="btn-success" onclick="exportCSV()">📊 Excel/CSV</button>
-                <button class="btn-backup" onclick="createBackup()">💾 ব্যাকআপ সংরক্ষণ</button>
-                <button class="btn-restore" onclick="restoreBackup()">🔄 ব্যাকআপ থেকে ফেরত</button>
-                <button class="btn-info" onclick="exportCloud()">☁️ Google Sheets</button>
+                <button class="btn-export" onclick="exportData()" id="btn-export">📤 এক্সপোর্ট (JSON)</button>
+                <button class="btn-import" onclick="document.getElementById('import-file').click()" id="btn-import">📥 ইমপোর্ট (JSON)</button>
+                <button class="btn-success" onclick="exportCSV()" id="btn-csv">📊 Excel/CSV</button>
+                <button class="btn-backup" onclick="createBackup()" id="btn-backup">💾 ব্যাকআপ সংরক্ষণ</button>
+                <button class="btn-restore" onclick="restoreBackup()" id="btn-restore">🔄 ব্যাকআপ থেকে ফেরত</button>
+                <button class="btn-info" onclick="exportCloud()" id="btn-cloud">☁️ Google Sheets</button>
                 <input type="file" id="import-file" accept=".json" onchange="importData(event)" style="display:none">
                 <input type="file" id="restore-file" accept=".json" onchange="restoreFromFile(event)" style="display:none">
             </div>
         </div>
         <div class="section">
-            <div class="section-title">📱 গ্রাহকের QR কোড</div>
+            <div class="section-title"><span class="sec-title-text">📱 গ্রাহকের QR কোড</span></div>
             <div class="form-group">
                 <input type="text" id="qr-input" placeholder="ফোন নম্বর লিখুন">
-                <button class="btn-info" onclick="generateQR()">QR তৈরি করুন</button>
+                <button class="btn-info" onclick="generateQR()" id="btn-qr">QR তৈরি করুন</button>
             </div>
             <div id="qr-display"></div>
         </div>
@@ -594,7 +724,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     <!-- ============ SETTINGS TAB ============ -->
     <div class="tab-content" id="tab-settings">
         <div class="section">
-            <div class="section-title">⚙️ সাধারণ সেটিংস</div>
+            <div class="section-title"><span class="sec-title-text">⚙️ সাধারণ সেটিংস</span></div>
             <div class="settings-grid">
                 <div>
                     <label style="display:block;margin-bottom:6px;font-weight:600">১ পয়েন্টের মূল্য (৳)</label>
@@ -615,7 +745,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
             </div>
         </div>
         <div class="section">
-            <div class="section-title">🎯 টিয়ার/লেভেল সিস্টেম</div>
+            <div class="section-title"><span class="sec-title-text">🎯 টিয়ার/লেভেল সিস্টেম</span></div>
             <div class="settings-grid">
                 <div>
                     <label style="display:block;margin-bottom:6px;font-weight:600">🥉 ব্রোঞ্জ (সর্বনিম্ন)</label>
@@ -636,7 +766,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
             </div>
         </div>
         <div class="section">
-            <div class="section-title">📱 হোয়াটসঅ্যাপ/SMS টেমপ্লেট</div>
+            <div class="section-title"><span class="sec-title-text">📱 হোয়াটসঅ্যাপ/SMS টেমপ্লেট</span></div>
             <div>
                 <label style="display:block;margin-bottom:6px;font-weight:600">নতুন গ্রাহক স্বাগত</label>
                 <textarea id="set-welcome-msg" rows="2" style="width:100%;margin-bottom:10px">প্রিয় {name}, আমাদের লয়্যালটি ক্লাবে স্বাগতম! আপনার বর্তমান পয়েন্ট: {points}</textarea>
@@ -644,7 +774,7 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
                 <textarea id="set-birthday-msg" rows="2" style="width:100%;margin-bottom:10px">শুভ জন্মদিন {name}! 🎂 উপহার হিসেবে {bonus} বোনাস পয়েন্ট পেয়েছেন!</textarea>
                 <label style="display:block;margin-bottom:6px;font-weight:600">পয়েন্ট আপডেট</label>
                 <textarea id="set-update-msg" rows="2" style="width:100%;margin-bottom:10px">প্রিয় {name}, আপনার অ্যাকাউন্টে {points} পয়েন্ট {action} হয়েছে। মোট: {total}</textarea>
-                <button class="btn-success" onclick="saveSettings()">সেটিংস সেভ করুন</button>
+                <button class="btn-success" onclick="saveSettings()" id="btn-save-settings">সেটিংস সেভ করুন</button>
             </div>
         </div>
     </div>
@@ -662,17 +792,18 @@ tr:hover { background: rgba(216, 27, 96, 0.05); }
     </div>
 </div>
 
+<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
 /* ============================================================
-   GLOBAL STATE
+   STATE MANAGEMENT
 ============================================================ */
-var customers = [];
-var transactions = [];
-var rewards = [];
-var redemptions = [];
-var settings = {
+let customers = [];
+let transactions = [];
+let rewards = [];
+let redemptions = [];
+let settings = {
     pointValue: 1,
     expiryDays: 365,
     purchaseRate: 1,
@@ -685,36 +816,82 @@ var settings = {
     birthdayMsg: 'শুভ জন্মদিন {name}! 🎂 উপহার হিসেবে {bonus} বোনাস পয়েন্ট পেয়েছেন!',
     updateMsg: 'প্রিয় {name}, আপনার অ্যাকাউন্টে {points} পয়েন্ট {action} হয়েছে। মোট: {total}'
 };
-var isSearchActive = false;
-var currentLang = 'bn';
-var darkMode = false;
+let isSearchActive = false;
+let currentLang = 'bn';
+let darkMode = false;
 
-var STORAGE_KEY = 'cosmeticsCustomers_v4';
-var TX_KEY = 'cosmeticsTransactions_v4';
-var REWARDS_KEY = 'cosmeticsRewards_v4';
-var REDEMPTIONS_KEY = 'cosmeticsRedemptions_v4';
-var SETTINGS_KEY = 'cosmeticsSettings_v4';
-var BACKUP_KEY = 'cosmeticsBackup_v4';
-var DARK_KEY = 'cosmeticsDarkMode';
+const STORAGE_KEY = 'cosmeticsCustomers_v3';
+const TX_KEY = 'cosmeticsTransactions_v3';
+const REWARDS_KEY = 'cosmeticsRewards_v3';
+const REDEMPTIONS_KEY = 'cosmeticsRedemptions_v3';
+const SETTINGS_KEY = 'cosmeticsSettings_v3';
+const BACKUP_KEY = 'cosmeticsBackup_v3';
+const DARK_KEY = 'cosmeticsDarkMode';
+
+/* ============================================================
+   I18N (Multi-language)
+============================================================ */
+const i18n = {
+    bn: {
+        title: '🎀 COSMETIC REWARDS CLUB 🎀',
+        tabCustomers: '👥 গ্রাহক',
+        tabDashboard: '📊 ড্যাশবোর্ড',
+        tabTransactions: '📜 হিস্ট্রি',
+        tabRewards: '🎁 রিওয়ার্ড',
+        tabTools: '💾 টুলস',
+        tabSettings: '⚙️ সেটিংস',
+        addSection: '➕ নতুন গ্রাহক যোগ করুন',
+        namePh: 'গ্রাহকের নাম',
+        phonePh: 'ফোন নম্বর',
+        pointsPh: 'পয়েন্ট',
+        addBtn: 'গ্রাহক যোগ করুন',
+        searchSection: '🔍 গ্রাহক খুঁজুন',
+        searchPh: 'নাম বা ফোন নম্বর দিয়ে খুঁজুন...',
+        searchBtn: 'সার্চ করুন',
+        resetBtn: 'রিসেট',
+        listSection: '👥 গ্রাহক তালিকা',
+        thName: 'নাম', thPhone: 'ফোন', thPoints: 'পয়েন্ট', thTier: 'লেভেল', thAction: 'অ্যাকশন',
+        addPoints: '➕ যোগ', deductPoints: '➖ ডিডাক্ট', editBtn: '✏️ এডিট', deleteBtn: '🗑️ ডিলিট'
+    },
+    en: {
+        title: '🎀 COSMETIC REWARDS CLUB 🎀',
+        tabCustomers: '👥 Customers',
+        tabDashboard: '📊 Dashboard',
+        tabTransactions: '📜 History',
+        tabRewards: '🎁 Rewards',
+        tabTools: '💾 Tools',
+        tabSettings: '⚙️ Settings',
+        addSection: '➕ Add New Customer',
+        namePh: 'Customer Name',
+        phonePh: 'Phone Number',
+        pointsPh: 'Points',
+        addBtn: 'Add Customer',
+        searchSection: '🔍 Search Customer',
+        searchPh: 'Search by name or phone...',
+        searchBtn: 'Search',
+        resetBtn: 'Reset',
+        listSection: '👥 Customer List',
+        thName: 'Name', thPhone: 'Phone', thPoints: 'Points', thTier: 'Tier', thAction: 'Actions',
+        addPoints: '➕ Add', deductPoints: '➖ Deduct', editBtn: '✏️ Edit', deleteBtn: '🗑️ Delete'
+    }
+};
+
+function t(key) { return i18n[currentLang][key] || key; }
 
 /* ============================================================
    TOAST
 ============================================================ */
-var toastTimer = null;
-function showToast(msg, type, duration) {
-    type = type || 'info';
-    duration = duration || 2500;
-    var el = document.getElementById('toast');
+let toastTimer = null;
+function showToast(msg, type = 'info', duration = 2500) {
+    const el = document.getElementById('toast');
     el.textContent = msg;
     el.className = 'toast show ' + type;
     if (toastTimer) clearTimeout(toastTimer);
-    toastTimer = setTimeout(function() {
-        el.classList.remove('show');
-    }, duration);
+    toastTimer = setTimeout(() => { el.classList.remove('show'); }, duration);
 }
 
 /* ============================================================
-   MODAL
+   MODAL (Custom Popup)
 ============================================================ */
 function openModal(title, bodyHtml, footerHtml) {
     document.getElementById('modal-title').textContent = title;
@@ -725,51 +902,55 @@ function openModal(title, bodyHtml, footerHtml) {
 function closeModal() {
     document.getElementById('modal-overlay').classList.remove('show');
 }
-document.getElementById('modal-overlay').addEventListener('click', function(e) {
+document.getElementById('modal-overlay').addEventListener('click', (e) => {
     if (e.target.id === 'modal-overlay') closeModal();
 });
 
-function showConfirm(title, message, onConfirm, confirmText, danger) {
-    confirmText = confirmText || 'হ্যাঁ';
-    var body = '<p style="font-size:1rem;line-height:1.6">' + message + '</p>';
-    var footer = '<button class="btn-clear" onclick="closeModal()">বাতিল</button>' +
-        '<button class="' + (danger ? 'btn-danger' : 'btn-success') + '" id="modal-confirm-btn">' + confirmText + '</button>';
+// Confirm dialog
+function showConfirm(title, message, onConfirm, confirmText = 'হ্যাঁ', danger = false) {
+    const body = `<p style="font-size:1rem;line-height:1.6">${message}</p>`;
+    const footer = `
+        <button class="btn-clear" onclick="closeModal()">বাতিল</button>
+        <button class="${danger ? 'btn-danger' : 'btn-success'}" id="modal-confirm-btn">${confirmText}</button>
+    `;
     openModal(title, body, footer);
-    document.getElementById('modal-confirm-btn').onclick = function() {
+    document.getElementById('modal-confirm-btn').onclick = () => {
         closeModal();
         onConfirm();
     };
 }
 
+// Prompt dialog
 function showPrompt(title, fields, onSubmit) {
-    var bodyHtml = '';
-    fields.forEach(function(f) {
-        bodyHtml += '<label>' + f.label + '</label>';
+    let bodyHtml = '';
+    fields.forEach(f => {
+        bodyHtml += `<label>${f.label}</label>`;
         if (f.type === 'select') {
-            bodyHtml += '<select id="prompt-' + f.id + '">';
-            f.options.forEach(function(o) {
-                bodyHtml += '<option value="' + o.value + '">' + o.label + '</option>';
-            });
-            bodyHtml += '</select>';
+            bodyHtml += `<select id="prompt-${f.id}">`;
+            f.options.forEach(o => bodyHtml += `<option value="${o.value}">${o.label}</option>`);
+            bodyHtml += `</select>`;
         } else if (f.type === 'textarea') {
-            bodyHtml += '<textarea id="prompt-' + f.id + '" rows="2">' + (f.value || '') + '</textarea>';
+            bodyHtml += `<textarea id="prompt-${f.id}" rows="2">${f.value || ''}</textarea>`;
         } else {
-            bodyHtml += '<input type="' + f.type + '" id="prompt-' + f.id + '" value="' + (f.value || '') + '" placeholder="' + (f.placeholder || '') + '">';
+            bodyHtml += `<input type="${f.type}" id="prompt-${f.id}" value="${f.value || ''}" placeholder="${f.placeholder || ''}">`;
         }
     });
-    var footer = '<button class="btn-clear" onclick="closeModal()">বাতিল</button>' +
-        '<button class="btn-success" id="prompt-submit">ঠিক আছে</button>';
+    const footer = `
+        <button class="btn-clear" onclick="closeModal()">বাতিল</button>
+        <button class="btn-success" id="prompt-submit">ঠিক আছে</button>
+    `;
     openModal(title, bodyHtml, footer);
-    document.getElementById('prompt-submit').onclick = function() {
-        var values = {};
-        fields.forEach(function(f) {
+    document.getElementById('prompt-submit').onclick = () => {
+        const values = {};
+        fields.forEach(f => {
             values[f.id] = document.getElementById('prompt-' + f.id).value.trim();
         });
         closeModal();
         onSubmit(values);
     };
-    setTimeout(function() {
-        var first = document.getElementById('prompt-' + fields[0].id);
+    // Enter key support
+    setTimeout(() => {
+        const first = document.getElementById('prompt-' + fields[0].id);
         if (first) first.focus();
     }, 100);
 }
@@ -779,35 +960,18 @@ function showPrompt(title, fields, onSubmit) {
 ============================================================ */
 function loadAll() {
     try {
-        var c = localStorage.getItem(STORAGE_KEY);
-        customers = c ? JSON.parse(c) : [];
-        if (!Array.isArray(customers)) customers = [];
-
-        var t = localStorage.getItem(TX_KEY);
-        transactions = t ? JSON.parse(t) : [];
-        if (!Array.isArray(transactions)) transactions = [];
-
-        var r = localStorage.getItem(REWARDS_KEY);
-        rewards = r ? JSON.parse(r) : [];
-        if (!Array.isArray(rewards)) rewards = [];
-
-        var rd = localStorage.getItem(REDEMPTIONS_KEY);
-        redemptions = rd ? JSON.parse(rd) : [];
-        if (!Array.isArray(redemptions)) redemptions = [];
-
-        var s = localStorage.getItem(SETTINGS_KEY);
-        if (s) {
-            var parsed = JSON.parse(s);
-            for (var k in parsed) {
-                if (parsed.hasOwnProperty(k)) settings[k] = parsed[k];
-            }
-        }
+        customers = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        transactions = JSON.parse(localStorage.getItem(TX_KEY)) || [];
+        rewards = JSON.parse(localStorage.getItem(REWARDS_KEY)) || [];
+        redemptions = JSON.parse(localStorage.getItem(REDEMPTIONS_KEY)) || [];
+        const s = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+        if (s) settings = { ...settings, ...s };
         darkMode = localStorage.getItem(DARK_KEY) === 'true';
     } catch (e) {
         console.error('Load error:', e);
+        customers = []; transactions = []; rewards = []; redemptions = [];
     }
 }
-
 function saveAll() {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(customers));
@@ -820,7 +984,6 @@ function saveAll() {
         showToast('⚠️ ডেটা সেভ সমস্যা!', 'error');
     }
 }
-
 function saveSettings() {
     settings.pointValue = parseFloat(document.getElementById('set-point-value').value) || 0;
     settings.expiryDays = parseInt(document.getElementById('set-expiry').value) || 0;
@@ -837,7 +1000,6 @@ function saveSettings() {
     showToast('✅ সেটিংস সেভ হয়েছে', 'success');
     renderAll();
 }
-
 function loadSettingsToUI() {
     document.getElementById('set-point-value').value = settings.pointValue;
     document.getElementById('set-expiry').value = settings.expiryDays;
@@ -857,78 +1019,67 @@ function loadSettingsToUI() {
 ============================================================ */
 function escapeHtml(text) {
     if (text === null || text === undefined) return '';
-    var div = document.createElement('div');
+    const div = document.createElement('div');
     div.textContent = String(text);
     return div.innerHTML;
 }
-
 function getTier(points) {
-    if (points >= settings.tierPlatinum) return { name: '💎 Platinum', cls: 'tier-platinum' };
-    if (points >= settings.tierGold) return { name: '🥇 Gold', cls: 'tier-gold' };
-    if (points >= settings.tierSilver) return { name: '🥈 Silver', cls: 'tier-silver' };
-    return { name: '🥉 Bronze', cls: 'tier-bronze' };
+    if (points >= settings.tierPlatinum) return { name: '💎 Platinum', class: 'tier-platinum' };
+    if (points >= settings.tierGold) return { name: '🥇 Gold', class: 'tier-gold' };
+    if (points >= settings.tierSilver) return { name: '🥈 Silver', class: 'tier-silver' };
+    return { name: '🥉 Bronze', class: 'tier-bronze' };
 }
-
+function getNextTier(points) {
+    if (points < settings.tierSilver) return { name: 'Silver', need: settings.tierSilver - points, max: settings.tierSilver };
+    if (points < settings.tierGold) return { name: 'Gold', need: settings.tierGold - points, max: settings.tierGold };
+    if (points < settings.tierPlatinum) return { name: 'Platinum', need: settings.tierPlatinum - points, max: settings.tierPlatinum };
+    return null;
+}
 function isBirthdayToday(birthday) {
     if (!birthday) return false;
-    var today = new Date();
-    var bd = new Date(birthday);
-    if (isNaN(bd.getTime())) return false;
+    const today = new Date();
+    const bd = new Date(birthday);
     return today.getDate() === bd.getDate() && today.getMonth() === bd.getMonth();
 }
-
 function formatDate(iso) {
     if (!iso) return '';
     try {
         return new Date(iso).toLocaleString('bn-BD');
-    } catch (e) {
-        return iso;
-    }
+    } catch { return iso; }
 }
-
-function addTransaction(name, phone, points, type, note) {
-    note = note || '';
+function addTransaction(name, phone, points, type, note = '') {
     transactions.unshift({
         id: Date.now() + Math.random(),
-        name: name,
-        phone: phone,
-        points: points,
-        type: type,
-        note: note,
+        name, phone, points, type, note,
         date: new Date().toISOString()
     });
+    // Keep last 1000
     if (transactions.length > 1000) transactions = transactions.slice(0, 1000);
     saveAll();
 }
-
 function playSound() {
     try {
-        var ctx = new (window.AudioContext || window.webkitAudioContext)();
-        var osc = ctx.createOscillator();
-        var gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain); gain.connect(ctx.destination);
         osc.frequency.value = 880;
         gain.gain.setValueAtTime(0.1, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
-        osc.start();
-        osc.stop(ctx.currentTime + 0.2);
+        osc.start(); osc.stop(ctx.currentTime + 0.2);
     } catch (e) { /* silent */ }
 }
-
 function throwConfetti() {
-    var colors = ['#d81b60', '#ff80ab', '#ffd700', '#4caf50', '#2196f3', '#9c27b0'];
-    for (var i = 0; i < 30; i++) {
-        (function(idx) {
-            var c = document.createElement('div');
-            c.className = 'confetti';
-            c.style.left = Math.random() * 100 + 'vw';
-            c.style.background = colors[Math.floor(Math.random() * colors.length)];
-            c.style.animationDelay = Math.random() * 0.5 + 's';
-            c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
-            document.body.appendChild(c);
-            setTimeout(function() { c.remove(); }, 3500);
-        })(i);
+    const colors = ['#d81b60', '#ff80ab', '#ffd700', '#4caf50', '#2196f3', '#9c27b0'];
+    for (let i = 0; i < 30; i++) {
+        const c = document.createElement('div');
+        c.className = 'confetti';
+        c.style.left = Math.random() * 100 + 'vw';
+        c.style.background = colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDelay = Math.random() * 0.5 + 's';
+        c.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3500);
     }
 }
 
@@ -936,12 +1087,10 @@ function throwConfetti() {
    TAB SWITCHING
 ============================================================ */
 function switchTab(name) {
-    var contents = document.querySelectorAll('.tab-content');
-    for (var i = 0; i < contents.length; i++) contents[i].classList.remove('active');
-    var btns = document.querySelectorAll('.tab-btn');
-    for (var j = 0; j < btns.length; j++) btns[j].classList.remove('active');
+    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
     document.getElementById('tab-' + name).classList.add('active');
-    document.querySelector('[data-tab="' + name + '"]').classList.add('active');
+    document.querySelector(`[data-tab="${name}"]`).classList.add('active');
     if (name === 'dashboard') renderDashboard();
     if (name === 'transactions') renderTransactions();
     if (name === 'rewards') renderRewards();
@@ -954,7 +1103,27 @@ function switchTab(name) {
 function toggleLanguage() {
     currentLang = currentLang === 'bn' ? 'en' : 'bn';
     document.getElementById('lang-btn').textContent = currentLang === 'bn' ? 'EN' : 'বাং';
-    showToast(currentLang === 'bn' ? 'ভাষা: বাংলা' : 'Language: English', 'success');
+    applyLanguage();
+}
+function applyLanguage() {
+    document.getElementById('app-title').textContent = t('title');
+    document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        const keys = ['tabCustomers', 'tabDashboard', 'tabTransactions', 'tabRewards', 'tabTools', 'tabSettings'];
+        btn.querySelector('.tab-text').textContent = t(keys[i]);
+    });
+    document.getElementById('cust-name').placeholder = t('namePh');
+    document.getElementById('cust-phone').placeholder = t('phonePh');
+    document.getElementById('cust-points').placeholder = t('pointsPh');
+    document.getElementById('btn-add-cust').textContent = t('addBtn');
+    document.getElementById('search-input').placeholder = t('searchPh');
+    document.getElementById('btn-search').textContent = t('searchBtn');
+    document.getElementById('btn-reset').textContent = t('resetBtn');
+    document.querySelectorAll('th')[0].textContent = t('thName');
+    document.querySelectorAll('th')[1].textContent = t('thPhone');
+    document.querySelectorAll('th')[2].textContent = t('thPoints');
+    document.querySelectorAll('th')[3].textContent = t('thTier');
+    document.querySelectorAll('th')[4].textContent = t('thAction');
+    updateTable();
 }
 
 /* ============================================================
@@ -971,51 +1140,40 @@ function toggleDarkMode() {
    RENDER TABLE
 ============================================================ */
 function renderTable(list, message) {
-    var tbody = document.getElementById('customer-table');
-    var countEl = document.getElementById('customer-count');
+    const tbody = document.getElementById('customer-table');
+    const countEl = document.getElementById('customer-count');
     tbody.innerHTML = '';
     countEl.textContent = list.length;
 
     if (list.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" class="empty-message">' + (message || 'কোন গ্রাহক নেই। নতুন গ্রাহক যোগ করুন।') + '</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="5" class="empty-message">${message || 'কোন গ্রাহক নেই।'}</td></tr>`;
         return;
     }
-
-    list.forEach(function(item) {
-        var customer = item.customer;
-        var originalIndex = item.originalIndex;
-        var tier = getTier(customer.points);
-        var isBd = isBirthdayToday(customer.birthday);
-        var row = document.createElement('tr');
+    list.forEach(({ customer, originalIndex }) => {
+        const tier = getTier(customer.points);
+        const isBd = isBirthdayToday(customer.birthday);
+        const row = document.createElement('tr');
         if (isBd) row.classList.add('birthday-highlight');
-
-        var nameCell = escapeHtml(customer.name);
-        if (customer.note) {
-            nameCell += '<br><small style="color:#999">📝 ' + escapeHtml(customer.note) + '</small>';
-        }
-
-        row.innerHTML =
-            '<td>' + nameCell + '</td>' +
-            '<td>' + escapeHtml(customer.phone) + '</td>' +
-            '<td class="points-display">' + customer.points + '</td>' +
-            '<td><span class="tier-badge ' + tier.cls + '">' + tier.name + '</span></td>' +
-            '<td class="actions-cell">' +
-                '<button class="btn-action" onclick="addPointsPrompt(' + originalIndex + ')" title="পয়েন্ট যোগ">➕</button>' +
-                '<button class="btn-action" onclick="deductPointsPrompt(' + originalIndex + ')" title="পয়েন্ট ডিডাক্ট">➖</button>' +
-                '<button class="btn-action" onclick="editCustomerPrompt(' + originalIndex + ')" title="এডিট">✏️</button>' +
-                '<button class="btn-action" onclick="showCustomerQR(' + originalIndex + ')" title="QR">📱</button>' +
-                '<button class="btn-action" onclick="sendWhatsApp(' + originalIndex + ')" title="হোয়াটসঅ্যাপ">💬</button>' +
-                '<button class="btn-danger btn-action" onclick="deleteCustomer(' + originalIndex + ')" title="ডিলিট">🗑️</button>' +
-            '</td>';
+        row.innerHTML = `
+            <td>${escapeHtml(customer.name)}${customer.note ? '<br><small style="color:#999">📝 ' + escapeHtml(customer.note) + '</small>' : ''}${customer.refBy ? '<br><small style="color:#2196f3">🔗 ' + escapeHtml(customer.refBy) + '</small>' : ''}</td>
+            <td>${escapeHtml(customer.phone)}</td>
+            <td class="points-display">${customer.points}</td>
+            <td><span class="tier-badge ${tier.class}">${tier.name}</span></td>
+            <td class="actions-cell">
+                <button class="btn-action" onclick="addPointsPrompt(${originalIndex})">➕</button>
+                <button class="btn-action" onclick="deductPointsPrompt(${originalIndex})">➖</button>
+                <button class="btn-action" onclick="editCustomerPrompt(${originalIndex})">✏️</button>
+                <button class="btn-action" onclick="showCustomerQR(${originalIndex})">📱</button>
+                <button class="btn-action" onclick="sendWhatsApp(${originalIndex})">💬</button>
+                <button class="btn-danger btn-action" onclick="deleteCustomer(${originalIndex})">🗑️</button>
+            </td>
+        `;
         tbody.appendChild(row);
     });
 }
-
 function updateTable() {
     if (isSearchActive) { searchCustomer(true); return; }
-    var list = customers.map(function(c, i) {
-        return { customer: c, originalIndex: i };
-    });
+    const list = customers.map((c, i) => ({ customer: c, originalIndex: i }));
     renderTable(list);
 }
 
@@ -1023,63 +1181,39 @@ function updateTable() {
    ADD CUSTOMER
 ============================================================ */
 function addCustomer() {
-    var name = document.getElementById('cust-name').value.trim();
-    var phone = document.getElementById('cust-phone').value.trim();
-    var points = parseInt(document.getElementById('cust-points').value) || 0;
-    var birthday = document.getElementById('cust-birthday').value;
+    const name = document.getElementById('cust-name').value.trim();
+    const phone = document.getElementById('cust-phone').value.trim();
+    const points = parseInt(document.getElementById('cust-points').value) || 0;
+    const birthday = document.getElementById('cust-birthday').value;
 
-    if (!name || !phone) {
-        showToast('⚠️ নাম এবং ফোন নম্বর লিখুন', 'error');
-        return;
-    }
-    if (points < 0) {
-        showToast('⚠️ পয়েন্ট ঋণাত্মক হতে পারে না', 'error');
-        return;
-    }
+    if (!name || !phone) { showToast('⚠️ নাম এবং ফোন নম্বর লিখুন', 'error'); return; }
+    if (points < 0) { showToast('⚠️ পয়েন্ট ঋণাত্মক নয়', 'error'); return; }
 
-    var existingIndex = -1;
-    for (var i = 0; i < customers.length; i++) {
-        if (customers[i].phone === phone) { existingIndex = i; break; }
-    }
-
+    const existingIndex = customers.findIndex(c => c.phone === phone);
     if (existingIndex !== -1) {
-        (function(idx) {
-            showConfirm('ডুপ্লিকেট ফোন', 'এই ফোন (' + phone + ') ইতিমধ্যে "' + customers[idx].name + '" নামে আছে। পয়েন্ট যোগ করবেন?', function() {
-                customers[idx].points += points;
-                addTransaction(customers[idx].name, phone, points, 'earn', 'ডুপ্লিকেট যোগ');
-                saveAll();
-                clearSearch();
-                renderAll();
-                showToast('✅ ' + points + ' পয়েন্ট যোগ হয়েছে', 'success');
-                playSound();
-            });
-        })(existingIndex);
+        showConfirm('ডুপ্লিকেট ফোন', `এই ফোন (${phone}) ইতিমধ্যে "${customers[existingIndex].name}" নামে আছে। পয়েন্ট যোগ করবেন?`, () => {
+            customers[existingIndex].points += points;
+            addTransaction(customers[existingIndex].name, phone, points, 'earn', 'ডুপ্লিকেট যোগ');
+            saveAll(); clearSearch(); renderAll();
+            showToast(`✅ ${points} পয়েন্ট যোগ হয়েছে`, 'success');
+            playSound();
+        });
         return;
     }
 
-    var isBd = isBirthdayToday(birthday);
-    var bonus = 0;
+    // Check if birthday today
+    const isBd = isBirthdayToday(birthday);
+    let bonus = 0;
     if (isBd) { bonus = settings.birthdayBonus; points += bonus; }
 
-    customers.push({
-        name: name,
-        phone: phone,
-        points: points,
-        birthday: birthday,
-        note: '',
-        refBy: ''
-    });
+    customers.push({ name, phone, points, birthday, note: '', refBy: '' });
     addTransaction(name, phone, points, 'earn', isBd ? 'নতুন + জন্মদিন বোনাস' : 'নতুন গ্রাহক');
-
     document.getElementById('cust-name').value = '';
     document.getElementById('cust-phone').value = '';
     document.getElementById('cust-points').value = '0';
     document.getElementById('cust-birthday').value = '';
-
-    saveAll();
-    clearSearch();
-    renderAll();
-    showToast('🌸 "' + name + '" যোগ হয়েছে' + (bonus ? ' (+' + bonus + ' জন্মদিন বোনাস)' : ''), 'success');
+    saveAll(); clearSearch(); renderAll();
+    showToast(`🌸 "${name}" যোগ হয়েছে${bonus ? ' (+' + bonus + ' জন্মদিন বোনাস)' : ''}`, 'success');
     if (isBd) throwConfetti();
     playSound();
 }
@@ -1089,98 +1223,60 @@ function addCustomer() {
 ============================================================ */
 function addPointsPrompt(index) {
     if (index < 0 || index >= customers.length) return;
-    var c = customers[index];
-    showPrompt('➕ পয়েন্ট যোগ — ' + c.name, [
+    const c = customers[index];
+    showPrompt(`➕ পয়েন্ট যোগ — ${c.name}`, [
         { id: 'points', label: 'কত পয়েন্ট যোগ করবেন?', type: 'number', value: '10', placeholder: '10' }
-    ], function(vals) {
-        var p = parseInt(vals.points);
-        if (isNaN(p) || p <= 0) {
-            showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error');
-            return;
-        }
+    ], (vals) => {
+        const p = parseInt(vals.points);
+        if (isNaN(p) || p <= 0) { showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error'); return; }
         customers[index].points += p;
         addTransaction(c.name, c.phone, p, 'earn', 'ম্যানুয়াল যোগ');
-        saveAll();
-        renderAll();
-        showToast('✅ ' + p + ' পয়েন্ট যোগ হয়েছে', 'success');
+        saveAll(); renderAll();
+        showToast(`✅ ${p} পয়েন্ট যোগ হয়েছে`, 'success');
         playSound();
     });
 }
-
 function deductPointsPrompt(index) {
     if (index < 0 || index >= customers.length) return;
-    var c = customers[index];
-    showPrompt('➖ পয়েন্ট ডিডাক্ট — ' + c.name, [
-        { id: 'points', label: 'কত পয়েন্ট কাটবেন? (বর্তমান: ' + c.points + ')', type: 'number', value: '10' }
-    ], function(vals) {
-        var p = parseInt(vals.points);
-        if (isNaN(p) || p <= 0) {
-            showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error');
-            return;
-        }
-        if (customers[index].points < p) {
-            showToast('⚠️ পর্যাপ্ত পয়েন্ট নেই! বর্তমান: ' + customers[index].points, 'error');
-            return;
-        }
+    const c = customers[index];
+    showPrompt(`➖ পয়েন্ট ডিডাক্ট — ${c.name}`, [
+        { id: 'points', label: `কত পয়েন্ট কাটবেন? (বর্তমান: ${c.points})`, type: 'number', value: '10' }
+    ], (vals) => {
+        const p = parseInt(vals.points);
+        if (isNaN(p) || p <= 0) { showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error'); return; }
+        if (c.points < p) { showToast(`⚠️ পর্যাপ্ত পয়েন্ট নেই! বর্তমান: ${c.points}`, 'error'); return; }
         customers[index].points -= p;
         addTransaction(c.name, c.phone, p, 'spend', 'ম্যানুয়াল ডিডাক্ট');
-        saveAll();
-        renderAll();
-        showToast('✅ ' + p + ' পয়েন্ট কাটা হয়েছে', 'success');
+        saveAll(); renderAll();
+        showToast(`✅ ${p} পয়েন্ট কাটা হয়েছে`, 'success');
     });
 }
-
 function editCustomerPrompt(index) {
-    if (index < 0 || index >= customers.length) return;
-    var c = customers[index];
-    showPrompt('✏️ এডিট — ' + c.name, [
+    const c = customers[index];
+    showPrompt(`✏️ এডিট — ${c.name}`, [
         { id: 'name', label: 'নাম', type: 'text', value: c.name },
         { id: 'phone', label: 'ফোন', type: 'tel', value: c.phone },
         { id: 'points', label: 'পয়েন্ট', type: 'number', value: c.points },
         { id: 'birthday', label: 'জন্মতারিখ', type: 'date', value: c.birthday || '' },
         { id: 'note', label: 'নোট', type: 'text', value: c.note || '' }
-    ], function(v) {
-        if (!v.name || !v.phone) {
-            showToast('⚠️ নাম/ফোন খালি হতে পারে না', 'error');
-            return;
-        }
-        for (var i = 0; i < customers.length; i++) {
-            if (i !== index && customers[i].phone === v.phone) {
-                showToast('⚠️ ফোন অন্য গ্রাহকের কাছে আছে', 'error');
-                return;
-            }
-        }
-        var newPts = parseInt(v.points);
-        if (isNaN(newPts) || newPts < 0) {
-            showToast('⚠️ বৈধ পয়েন্ট লিখুন', 'error');
-            return;
-        }
-        var diff = newPts - c.points;
-        customers[index] = {
-            name: v.name,
-            phone: v.phone,
-            points: newPts,
-            birthday: v.birthday,
-            note: v.note,
-            refBy: c.refBy || ''
-        };
-        if (diff !== 0) {
-            addTransaction(v.name, v.phone, Math.abs(diff), diff > 0 ? 'earn' : 'spend', 'এডিট');
-        }
-        saveAll();
-        renderAll();
+    ], (v) => {
+        if (!v.name || !v.phone) { showToast('⚠️ নাম/ফোন খালি নয়', 'error'); return; }
+        const dup = customers.findIndex((x, i) => i !== index && x.phone === v.phone);
+        if (dup !== -1) { showToast('⚠️ ফোন অন্য গ্রাহকের', 'error'); return; }
+        const newPts = parseInt(v.points);
+        if (isNaN(newPts) || newPts < 0) { showToast('⚠️ বৈধ পয়েন্ট', 'error'); return; }
+        const diff = newPts - c.points;
+        customers[index] = { ...c, name: v.name, phone: v.phone, points: newPts, birthday: v.birthday, note: v.note };
+        if (diff !== 0) addTransaction(v.name, v.phone, Math.abs(diff), diff > 0 ? 'earn' : 'spend', 'এডিট');
+        saveAll(); renderAll();
         showToast('✏️ আপডেট হয়েছে', 'success');
     });
 }
-
 function deleteCustomer(index) {
-    if (index < 0 || index >= customers.length) return;
-    var c = customers[index];
-    showConfirm('🗑️ ডিলিট', '"' + c.name + '" (' + c.phone + ') ডিলিট করবেন?', function() {
+    const c = customers[index];
+    showConfirm('🗑️ ডিলিট', `"${c.name}" (${c.phone}) ডিলিট করবেন?`, () => {
         customers.splice(index, 1);
-        saveAll();
-        clearSearch();
-        renderAll();
+        saveAll(); clearSearch(); renderAll();
         showToast('🗑️ ডিলিট হয়েছে', 'success');
     }, 'ডিলিট', true);
 }
@@ -1188,31 +1284,24 @@ function deleteCustomer(index) {
 /* ============================================================
    SEARCH
 ============================================================ */
-function searchCustomer(silent) {
-    silent = silent || false;
-    var q = document.getElementById('search-input').value.trim().toLowerCase();
-    var info = document.getElementById('search-info');
-    if (!q) {
-        if (!silent) showToast('⚠️ কিছু লিখুন', 'error');
-        return;
-    }
-    var matches = [];
-    for (var i = 0; i < customers.length; i++) {
-        var c = customers[i];
-        if (c.name.toLowerCase().indexOf(q) !== -1 || c.phone.toLowerCase().indexOf(q) !== -1) {
-            matches.push({ customer: c, originalIndex: i });
-        }
-    }
+function searchCustomer(silent = false) {
+    const q = document.getElementById('search-input').value.trim().toLowerCase();
+    const info = document.getElementById('search-info');
+    if (!q) { if (!silent) showToast('⚠️ কিছু লিখুন', 'error'); return; }
+
+    const matches = [];
+    customers.forEach((c, i) => {
+        if (c.name.toLowerCase().includes(q) || c.phone.toLowerCase().includes(q)) matches.push({ customer: c, originalIndex: i });
+    });
     isSearchActive = true;
     if (matches.length === 0) {
-        info.innerHTML = '<div class="search-result-info" style="background:#ffebee;color:#b71c1c">🔍 "' + escapeHtml(q) + '" — পাওয়া যায়নি <button class="btn-clear" onclick="clearSearch()">রিসেট</button></div>';
-        renderTable([], '🔍 "' + q + '" এর জন্য কিছু নেই');
+        info.innerHTML = `<div class="search-result-info" style="background:#ffebee;color:#b71c1c">🔍 "${escapeHtml(q)}" — পাওয়া যায়নি <button class="btn-clear" onclick="clearSearch()">রিসেট</button></div>`;
+        renderTable([], `🔍 "${q}" এর জন্য কিছু নেই`);
     } else {
-        info.innerHTML = '<div class="search-result-info">🔍 "' + escapeHtml(q) + '" — ' + matches.length + ' জন পাওয়া গেছে <button class="btn-clear" onclick="clearSearch()">রিসেট</button></div>';
+        info.innerHTML = `<div class="search-result-info">🔍 "${escapeHtml(q)}" — ${matches.length} জন পাওয়া গেছে <button class="btn-clear" onclick="clearSearch()">রিসেট</button></div>`;
         renderTable(matches);
     }
 }
-
 function clearSearch() {
     document.getElementById('search-input').value = '';
     document.getElementById('search-info').innerHTML = '';
@@ -1224,24 +1313,12 @@ function clearSearch() {
    DASHBOARD
 ============================================================ */
 function renderDashboard() {
-    var total = customers.length;
-    var totalPts = 0;
-    for (var i = 0; i < customers.length; i++) totalPts += customers[i].points;
-
-    var today = new Date().toISOString().slice(0, 10);
-    var todayCount = 0;
-    for (var j = 0; j < transactions.length; j++) {
-        if (transactions[j].date.slice(0, 10) === today && transactions[j].note && transactions[j].note.indexOf('নতুন') !== -1) {
-            todayCount++;
-        }
-    }
-
-    var bdCount = 0;
-    for (var k = 0; k < customers.length; k++) {
-        if (isBirthdayToday(customers[k].birthday)) bdCount++;
-    }
-
-    var avg = total ? Math.round(totalPts / total) : 0;
+    const total = customers.length;
+    const totalPts = customers.reduce((s, c) => s + c.points, 0);
+    const today = new Date().toISOString().slice(0, 10);
+    const todayCount = transactions.filter(t => t.date.slice(0, 10) === today && t.note && t.note.includes('নতুন')).length;
+    const bdCount = customers.filter(c => isBirthdayToday(c.birthday)).length;
+    const avg = total ? Math.round(totalPts / total) : 0;
 
     document.getElementById('stat-total').textContent = total;
     document.getElementById('stat-points').textContent = totalPts;
@@ -1251,86 +1328,55 @@ function renderDashboard() {
     document.getElementById('stat-avg').textContent = avg;
 
     // Top 5
-    var sorted = customers.slice().sort(function(a, b) { return b.points - a.points; });
-    var top = sorted.slice(0, 5);
-    var topEl = document.getElementById('top-customers');
-    if (top.length === 0) {
-        topEl.innerHTML = '<p class="empty-message">কোন গ্রাহক নেই</p>';
-    } else {
-        var medals = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'];
-        var html = '';
-        for (var m = 0; m < top.length; m++) {
-            var c = top[m];
-            var tier = getTier(c.points);
-            html += '<div class="transaction-item"><span style="font-size:1.5rem">' + medals[m] + '</span>' +
-                '<div class="tx-info"><div class="tx-name">' + escapeHtml(c.name) + '</div>' +
-                '<div class="tx-date">' + escapeHtml(c.phone) + '</div></div>' +
-                '<div><span class="tier-badge ' + tier.cls + '">' + tier.name + '</span><br>' +
-                '<strong style="color:var(--primary-color)">' + c.points + ' pts</strong></div></div>';
-        }
-        topEl.innerHTML = html;
+    const top = [...customers].sort((a, b) => b.points - a.points).slice(0, 5);
+    const topEl = document.getElementById('top-customers');
+    if (top.length === 0) { topEl.innerHTML = '<p class="empty-message">কোন গ্রাহক নেই</p>'; }
+    else {
+        topEl.innerHTML = top.map((c, i) => {
+            const medal = ['🥇', '🥈', '🥉', '4️⃣', '5️⃣'][i];
+            const tier = getTier(c.points);
+            return `<div class="transaction-item" style="animation-delay:${i * 0.1}s"><span style="font-size:1.5rem">${medal}</span><div class="tx-info"><div class="tx-name">${escapeHtml(c.name)}</div><div class="tx-date">${escapeHtml(c.phone)}</div></div><div><span class="tier-badge ${tier.class}">${tier.name}</span><br><strong style="color:var(--primary-color)">${c.points} pts</strong></div></div>`;
+        }).join('');
     }
 
-    // 7 days activity
-    var weekAgo = Date.now() - 7 * 86400000;
-    var earn = 0, spend = 0, recentCount = 0;
-    for (var n = 0; n < transactions.length; n++) {
-        var t = transactions[n];
-        if (new Date(t.date).getTime() > weekAgo) {
-            recentCount++;
-            if (t.type === 'earn') earn += t.points;
-            else spend += t.points;
-        }
-    }
-    document.getElementById('recent-activity').innerHTML =
-        '<div class="stats-grid">' +
-            '<div class="stat-card" style="background:linear-gradient(135deg,#4caf50,#2e7d32)"><div class="stat-value">+' + earn + '</div><div class="stat-label">৭ দিনে যোগ</div></div>' +
-            '<div class="stat-card" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><div class="stat-value">-' + spend + '</div><div class="stat-label">৭ দিনে খরচ</div></div>' +
-            '<div class="stat-card" style="background:linear-gradient(135deg,#2196f3,#0d47a1)"><div class="stat-value">' + recentCount + '</div><div class="stat-label">মোট ট্রানজেকশন</div></div>' +
-        '</div>';
+    // Recent 7 days activity
+    const weekAgo = Date.now() - 7 * 86400000;
+    const recent = transactions.filter(t => new Date(t.date).getTime() > weekAgo);
+    const earn = recent.filter(t => t.type === 'earn').reduce((s, t) => s + t.points, 0);
+    const spend = recent.filter(t => t.type === 'spend').reduce((s, t) => s + t.points, 0);
+    document.getElementById('recent-activity').innerHTML = `
+        <div class="stats-grid">
+            <div class="stat-card" style="background:linear-gradient(135deg,#4caf50,#2e7d32)"><div class="stat-value">+${earn}</div><div class="stat-label">৭ দিনে যোগ</div></div>
+            <div class="stat-card" style="background:linear-gradient(135deg,#e53935,#b71c1c)"><div class="stat-value">-${spend}</div><div class="stat-label">৭ দিনে খরচ</div></div>
+            <div class="stat-card" style="background:linear-gradient(135deg,#2196f3,#0d47a1)"><div class="stat-value">${recent.length}</div><div class="stat-label">মোট ট্রানজেকশন</div></div>
+        </div>
+    `;
 }
 
 /* ============================================================
    TRANSACTIONS
 ============================================================ */
 function renderTransactions() {
-    var txSearch = document.getElementById('tx-search');
-    var txFilter = document.getElementById('tx-filter');
-    var q = txSearch ? txSearch.value.trim().toLowerCase() : '';
-    var filter = txFilter ? txFilter.value : 'all';
+    const q = (document.getElementById('tx-search')?.value || '').trim().toLowerCase();
+    const filter = document.getElementById('tx-filter')?.value || 'all';
+    let list = transactions;
+    if (q) list = list.filter(t => t.name.toLowerCase().includes(q) || t.phone.includes(q));
+    if (filter !== 'all') list = list.filter(t => t.type === filter);
 
-    var list = transactions.slice();
-    if (q) {
-        list = list.filter(function(t) {
-            return t.name.toLowerCase().indexOf(q) !== -1 || t.phone.indexOf(q) !== -1;
-        });
-    }
-    if (filter !== 'all') {
-        list = list.filter(function(t) { return t.type === filter; });
-    }
-
-    var el = document.getElementById('transaction-list');
-    if (list.length === 0) {
-        el.innerHTML = '<p class="empty-message">কোন ট্রানজেকশন নেই</p>';
-        return;
-    }
-    var html = '';
-    var limit = Math.min(list.length, 200);
-    for (var i = 0; i < limit; i++) {
-        var t = list[i];
-        html += '<div class="transaction-item ' + t.type + '">' +
-            '<div class="tx-info">' +
-                '<div class="tx-name">' + escapeHtml(t.name) + ' <small style="color:#999">(' + escapeHtml(t.phone) + ')</small></div>' +
-                '<div class="tx-date">' + formatDate(t.date) + (t.note ? ' • ' + escapeHtml(t.note) : '') + '</div>' +
-            '</div>' +
-            '<div class="tx-points ' + t.type + '">' + (t.type === 'earn' ? '+' : '-') + t.points + '</div>' +
-        '</div>';
-    }
-    el.innerHTML = html;
+    const el = document.getElementById('transaction-list');
+    if (list.length === 0) { el.innerHTML = '<p class="empty-message">কোন ট্রানজেকশন নেই</p>'; return; }
+    el.innerHTML = list.slice(0, 200).map((t, i) => `
+        <div class="transaction-item ${t.type}" style="animation-delay:${Math.min(i * 0.03, 1)}s">
+            <div class="tx-info">
+                <div class="tx-name">${escapeHtml(t.name)} <small style="color:#999">(${escapeHtml(t.phone)})</small></div>
+                <div class="tx-date">${formatDate(t.date)} ${t.note ? '• ' + escapeHtml(t.note) : ''}</div>
+            </div>
+            <div class="tx-points ${t.type}">${t.type === 'earn' ? '+' : '-'}${t.points}</div>
+        </div>
+    `).join('');
 }
-
 function clearTransactions() {
-    showConfirm('🗑️ হিস্ট্রি মুছুন', 'সব ট্রানজেকশন মুছে ফেলবেন? এটা ফেরানো যাবে না।', function() {
+    showConfirm('🗑️ হিস্ট্রি মুছুন', 'সব ট্রানজেকশন মুছে ফেলবেন? এটা ফেরানো যাবে না।', () => {
         transactions = [];
         saveAll();
         renderTransactions();
@@ -1342,102 +1388,68 @@ function clearTransactions() {
    REWARDS
 ============================================================ */
 function addReward() {
-    var name = document.getElementById('reward-name').value.trim();
-    var pts = parseInt(document.getElementById('reward-points').value);
-    if (!name || isNaN(pts) || pts <= 0) {
-        showToast('⚠️ নাম ও পয়েন্ট লিখুন', 'error');
-        return;
-    }
-    rewards.push({ id: Date.now(), name: name, points: pts });
+    const name = document.getElementById('reward-name').value.trim();
+    const pts = parseInt(document.getElementById('reward-points').value);
+    if (!name || isNaN(pts) || pts <= 0) { showToast('⚠️ নাম ও পয়েন্ট লিখুন', 'error'); return; }
+    rewards.push({ id: Date.now(), name, points: pts });
     document.getElementById('reward-name').value = '';
     document.getElementById('reward-points').value = '';
-    saveAll();
-    renderRewards();
+    saveAll(); renderRewards();
     showToast('🎁 রিওয়ার্ড যোগ হয়েছে', 'success');
 }
-
 function renderRewards() {
-    var el = document.getElementById('reward-list');
-    if (rewards.length === 0) {
-        el.innerHTML = '<p class="empty-message">কোন রিওয়ার্ড নেই</p>';
-    } else {
-        var html = '';
-        for (var i = 0; i < rewards.length; i++) {
-            var r = rewards[i];
-            html += '<div class="reward-card">' +
-                '<div><strong style="color:var(--secondary-color)">🎁 ' + escapeHtml(r.name) + '</strong><br><small>' + r.points + ' পয়েন্ট প্রয়োজন</small></div>' +
-                '<div>' +
-                    '<button class="btn-success" onclick="redeemReward(' + r.id + ')">রিডিম</button> ' +
-                    '<button class="btn-danger" onclick="deleteReward(' + r.id + ')">🗑️</button>' +
-                '</div>' +
-            '</div>';
-        }
-        el.innerHTML = html;
+    const el = document.getElementById('reward-list');
+    if (rewards.length === 0) { el.innerHTML = '<p class="empty-message">কোন রিওয়ার্ড নেই</p>'; }
+    else {
+        el.innerHTML = rewards.map(r => `
+            <div class="reward-card">
+                <div><strong style="color:var(--secondary-color)">🎁 ${escapeHtml(r.name)}</strong><br><small>${r.points} পয়েন্ট প্রয়োজন</small></div>
+                <div>
+                    <button class="btn-success" onclick="redeemReward(${r.id})">রিডিম</button>
+                    <button class="btn-danger" onclick="deleteReward(${r.id})">🗑️</button>
+                </div>
+            </div>
+        `).join('');
     }
-
-    var rh = document.getElementById('redemption-history');
-    if (redemptions.length === 0) {
-        rh.innerHTML = '<p class="empty-message">কোন রিডেম্পশন নেই</p>';
-    } else {
-        var rhHtml = '';
-        var limit = Math.min(redemptions.length, 50);
-        for (var j = 0; j < limit; j++) {
-            var rd = redemptions[j];
-            rhHtml += '<div class="transaction-item">' +
-                '<div class="tx-info"><div class="tx-name">' + escapeHtml(rd.customerName) + ' — ' + escapeHtml(rd.rewardName) + '</div>' +
-                '<div class="tx-date">' + formatDate(rd.date) + '</div></div>' +
-                '<div class="tx-points spend">-' + rd.points + '</div>' +
-            '</div>';
-        }
-        rh.innerHTML = rhHtml;
+    // Redemption history
+    const rh = document.getElementById('redemption-history');
+    if (redemptions.length === 0) { rh.innerHTML = '<p class="empty-message">কোন রিডেম্পশন নেই</p>'; }
+    else {
+        rh.innerHTML = redemptions.slice(0, 50).map(r => `
+            <div class="transaction-item">
+                <div class="tx-info"><div class="tx-name">${escapeHtml(r.customerName)} — ${escapeHtml(r.rewardName)}</div><div class="tx-date">${formatDate(r.date)}</div></div>
+                <div class="tx-points spend">-${r.points}</div>
+            </div>
+        `).join('');
     }
 }
-
 function redeemReward(rewardId) {
-    var reward = null;
-    for (var i = 0; i < rewards.length; i++) {
-        if (rewards[i].id === rewardId) { reward = rewards[i]; break; }
-    }
+    const reward = rewards.find(r => r.id === rewardId);
     if (!reward) return;
-
-    var options = customers.map(function(c, i) {
-        return { value: i, label: c.name + ' (' + c.points + ' pts)' };
-    });
-    if (options.length === 0) {
-        showToast('⚠️ কোন গ্রাহক নেই', 'error');
-        return;
-    }
-    showPrompt('🎁 ' + reward.name + ' রিডিম', [
-        { id: 'cust', label: 'গ্রাহক নির্বাচন করুন', type: 'select', options: options }
-    ], function(v) {
-        var idx = parseInt(v.cust);
-        var c = customers[idx];
-        if (c.points < reward.points) {
-            showToast('⚠️ পর্যাপ্ত পয়েন্ট নেই! প্রয়োজন: ' + reward.points, 'error');
-            return;
-        }
+    // Select customer
+    const options = customers.map((c, i) => ({ value: i, label: `${c.name} (${c.points} pts)` }));
+    if (options.length === 0) { showToast('⚠️ কোন গ্রাহক নেই', 'error'); return; }
+    showPrompt(`🎁 ${reward.name} রিডিম`, [
+        { id: 'cust', label: 'গ্রাহক নির্বাচন করুন', type: 'select', options }
+    ], (v) => {
+        const idx = parseInt(v.cust);
+        const c = customers[idx];
+        if (c.points < reward.points) { showToast(`⚠️ পর্যাপ্ত পয়েন্ট নেই! প্রয়োজন: ${reward.points}`, 'error'); return; }
         customers[idx].points -= reward.points;
         redemptions.unshift({
-            id: Date.now(),
-            customerName: c.name,
-            phone: c.phone,
-            rewardName: reward.name,
-            points: reward.points,
-            date: new Date().toISOString()
+            id: Date.now(), customerName: c.name, phone: c.phone,
+            rewardName: reward.name, points: reward.points, date: new Date().toISOString()
         });
-        addTransaction(c.name, c.phone, reward.points, 'spend', 'রিডিম: ' + reward.name);
-        saveAll();
-        renderAll();
-        showToast('🎉 ' + c.name + ' "' + reward.name + '" রিডিম করেছেন!', 'success');
+        addTransaction(c.name, c.phone, reward.points, 'spend', `রিডিম: ${reward.name}`);
+        saveAll(); renderAll();
+        showToast(`🎉 ${c.name} "${reward.name}" রিডিম করেছেন!`, 'success');
         throwConfetti();
     });
 }
-
 function deleteReward(id) {
-    showConfirm('🗑️ রিওয়ার্ড ডিলিট', 'এই রিওয়ার্ড ডিলিট করবেন?', function() {
-        rewards = rewards.filter(function(r) { return r.id !== id; });
-        saveAll();
-        renderRewards();
+    showConfirm('🗑️ রিওয়ার্ড ডিলিট', 'এই রিওয়ার্ড ডিলিট করবেন?', () => {
+        rewards = rewards.filter(r => r.id !== id);
+        saveAll(); renderRewards();
         showToast('🗑️ ডিলিট হয়েছে', 'success');
     }, 'ডিলিট', true);
 }
@@ -1446,273 +1458,138 @@ function deleteReward(id) {
    QR CODE
 ============================================================ */
 function generateQR() {
-    var phone = document.getElementById('qr-input').value.trim();
-    if (!phone) {
-        showToast('⚠️ ফোন নম্বর লিখুন', 'error');
-        return;
-    }
-    var c = null;
-    for (var i = 0; i < customers.length; i++) {
-        if (customers[i].phone === phone) { c = customers[i]; break; }
-    }
-    var text = c ? 'LOYALTY:' + c.phone + ':' + c.name + ':' + c.points : 'LOYALTY:' + phone;
-    showQRCode(text, c ? c.name : '');
+    const phone = document.getElementById('qr-input').value.trim();
+    if (!phone) { showToast('⚠️ ফোন নম্বর লিখুন', 'error'); return; }
+    const c = customers.find(x => x.phone === phone);
+    const text = c ? `LOYALTY:${c.phone}:${c.name}:${c.points}` : `LOYALTY:${phone}`;
+    showQRCode(text);
 }
-
 function showCustomerQR(index) {
-    if (index < 0 || index >= customers.length) return;
-    var c = customers[index];
-    var text = 'LOYALTY:' + c.phone + ':' + c.name + ':' + c.points;
-    // Switch to tools tab and show QR
-    switchTab('tools');
+    const c = customers[index];
+    const text = `LOYALTY:${c.phone}:${c.name}:${c.points}`;
     showQRCode(text, c.name);
 }
-
-function showQRCode(text, name) {
-    name = name || '';
-    var url = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + encodeURIComponent(text);
-    var el = document.getElementById('qr-display');
-    el.innerHTML = '<div class="qr-display">' +
-        '<img src="' + url + '" alt="QR Code" style="border-radius:10px" onerror="this.style.display=\'none\';this.parentNode.innerHTML+=\'<p style=color:red>QR লোড করা যায়নি — ইন্টারনেট চেক করুন</p>\'">' +
-        '<p style="margin-top:10px;font-weight:600">' + escapeHtml(name) + '</p>' +
-        '<p style="font-size:0.8rem;color:#999;word-break:break-all">' + escapeHtml(text) + '</p>' +
-    '</div>';
+function showQRCode(text, name = '') {
+    // Simple QR via Google Charts API
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`;
+    const el = document.getElementById('qr-display');
+    el.innerHTML = `<div class="qr-display"><img src="${url}" alt="QR Code" style="border-radius:10px"><p style="margin-top:10px;font-weight:600">${name ? escapeHtml(name) : ''}</p><p style="font-size:0.8rem;color:#999">${escapeHtml(text)}</p></div>`;
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 /* ============================================================
    WHATSAPP
 ============================================================ */
 function sendWhatsApp(index) {
-    if (index < 0 || index >= customers.length) return;
-    var c = customers[index];
-    var msg = settings.welcomeMsg
+    const c = customers[index];
+    const msg = settings.welcomeMsg
         .replace(/{name}/g, c.name)
         .replace(/{points}/g, c.points);
-    var phone = c.phone.replace(/[^0-9]/g, '');
-    var url = 'https://wa.me/' + phone + '?text=' + encodeURIComponent(msg);
+    const phone = c.phone.replace(/[^0-9]/g, '');
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
 }
 
 /* ============================================================
-   EXPORT / IMPORT
+   EXPORT / IMPORT / BACKUP
 ============================================================ */
 function exportData() {
-    if (customers.length === 0) {
-        showToast('⚠️ কোন ডেটা নেই', 'error');
-        return;
-    }
+    if (customers.length === 0) { showToast('⚠️ কোন ডেটা নেই', 'error'); return; }
     try {
-        var data = {
-            customers: customers,
-            transactions: transactions,
-            rewards: rewards,
-            redemptions: redemptions,
-            settings: settings,
-            exportedAt: new Date().toISOString()
-        };
-        var str = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(data, null, 2));
-        var a = document.createElement('a');
-        var ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
-        a.href = str;
-        a.download = 'loyalty_backup_' + ts + '.json';
-        document.body.appendChild(a);
-        a.click();
-        a.remove();
+        const data = { customers, transactions, rewards, redemptions, settings, exportedAt: new Date().toISOString() };
+        const str = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data, null, 2));
+        const a = document.createElement('a');
+        const ts = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+        a.href = str; a.download = `loyalty_backup_${ts}.json`;
+        document.body.appendChild(a); a.click(); a.remove();
         showToast('📤 এক্সপোর্ট সফল', 'success');
-    } catch (e) {
-        showToast('⚠️ সমস্যা হয়েছে', 'error');
-    }
+    } catch (e) { showToast('⚠️ সমস্যা', 'error'); }
 }
-
 function exportCSV() {
-    if (customers.length === 0) {
-        showToast('⚠️ কোন ডেটা নেই', 'error');
-        return;
-    }
-    var headers = ['Name', 'Phone', 'Points', 'Tier', 'Birthday', 'Note'];
-    var rows = [headers];
-    for (var i = 0; i < customers.length; i++) {
-        var c = customers[i];
-        rows.push([c.name, c.phone, c.points, getTier(c.points).name, c.birthday || '', c.note || '']);
-    }
-    var csv = '\uFEFF' + rows.map(function(r) {
-        return r.map(function(x) {
-            return '"' + String(x).replace(/"/g, '""') + '"';
-        }).join(',');
-    }).join('\n');
-    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-    var a = document.createElement('a');
+    if (customers.length === 0) { showToast('⚠️ কোন ডেটা নেই', 'error'); return; }
+    const headers = ['Name', 'Phone', 'Points', 'Tier', 'Birthday', 'Note'];
+    const rows = customers.map(c => [c.name, c.phone, c.points, getTier(c.points).name.replace(/[^\w\s]/g, ''), c.birthday || '', c.note || '']);
+    const csv = '\uFEFF' + [headers, ...rows].map(r => r.map(x => `"${String(x).replace(/"/g, '""')}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
-    a.download = 'customers_' + Date.now() + '.csv';
+    a.download = `customers_${Date.now()}.csv`;
     a.click();
     showToast('📊 CSV এক্সপোর্ট সফল', 'success');
 }
-
 function exportCloud() {
-    if (customers.length === 0) {
-        showToast('⚠️ কোন ডেটা নেই', 'error');
-        return;
-    }
-    var headers = ['Name', 'Phone', 'Points', 'Tier'];
-    var rows = [headers];
-    for (var i = 0; i < customers.length; i++) {
-        var c = customers[i];
-        rows.push([c.name, c.phone, c.points, getTier(c.points).name]);
-    }
-    var csv = '\uFEFF' + rows.map(function(r) {
-        return r.map(function(x) {
-            return '"' + String(x).replace(/"/g, '""') + '"';
-        }).join(',');
-    }).join('\n');
-    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'sheets_export_' + Date.now() + '.csv';
-    a.click();
-    showToast('☁️ ফাইল ডাউনলোড হয়েছে — Google Sheets-এ ইমপোর্ট করুন', 'success', 4000);
+    // Export as a JSON blob + show instructions for Google Sheets
+    const data = customers.map(c => ({ Name: c.name, Phone: c.phone, Points: c.points, Tier: getTier(c.points).name }));
+    const csv = '\uFEFF' + [Object.keys(data[0] || {}), ...data.map(o => Object.values(o))].map(r => r.map(x => `"${x}"`).join(',')).join('\n');
+    showPrompt('☁️ Google Sheets-এ পাঠান', [
+        { id: 'email', label: 'আপনার ইমেইল (ঐচ্ছিক)', type: 'text', value: '' }
+    ], (v) => {
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = `sheets_export_${Date.now()}.csv`;
+        a.click();
+        showToast('☁️ ফাইল ডাউনলোড হয়েছে — Google Sheets-এ ইমপোর্ট করুন', 'success', 4000);
+    });
 }
-
 function importData(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
         try {
-            var data = JSON.parse(e.target.result);
-            var importedCustomers = Array.isArray(data) ? data : (data.customers || []);
-            if (!Array.isArray(importedCustomers)) {
-                showToast('⚠️ ভুল ফরম্যাট', 'error');
-                event.target.value = '';
-                return;
-            }
-            var valid = importedCustomers.filter(function(x) {
-                return x && typeof x.name === 'string' && typeof x.phone === 'string' && typeof x.points === 'number';
-            });
-            if (valid.length === 0) {
-                showToast('⚠️ বৈধ ডেটা নেই', 'error');
-                event.target.value = '';
-                return;
-            }
-            showConfirm('📥 ইমপোর্ট', valid.length + ' টি গ্রাহক ইমপোর্ট হবে এবং ' + customers.length + ' টি প্রতিস্থাপন করবে। চালিয়ে যাবেন?', function() {
+            const data = JSON.parse(e.target.result);
+            // Support both array and object format
+            const importedCustomers = Array.isArray(data) ? data : (data.customers || []);
+            if (!Array.isArray(importedCustomers)) { showToast('⚠️ ভুল ফরম্যাট', 'error'); event.target.value = ''; return; }
+            const valid = importedCustomers.filter(x => x && typeof x.name === 'string' && typeof x.phone === 'string' && typeof x.points === 'number');
+            if (valid.length === 0) { showToast('⚠️ বৈধ ডেটা নেই', 'error'); event.target.value = ''; return; }
+            showConfirm('📥 ইমপোর্ট', `${valid.length} টি গ্রাহক ইমপোর্ট হবে এবং ${customers.length} টি প্রতিস্থাপন করবে। চালিয়ে যাবেন?`, () => {
                 customers = valid;
                 if (data.transactions) transactions = data.transactions;
                 if (data.rewards) rewards = data.rewards;
                 if (data.redemptions) redemptions = data.redemptions;
-                if (data.settings) {
-                    for (var k in data.settings) {
-                        if (data.settings.hasOwnProperty(k)) settings[k] = data.settings[k];
-                    }
-                }
-                saveAll();
-                clearSearch();
-                renderAll();
-                loadSettingsToUI();
-                showToast('✅ ' + valid.length + ' টি ইমপোর্ট সফল', 'success');
+                if (data.settings) settings = { ...settings, ...data.settings };
+                saveAll(); clearSearch(); renderAll(); loadSettingsToUI();
+                showToast(`✅ ${valid.length} টি ইমপোর্ট সফল`, 'success');
             });
-        } catch (err) {
-            showToast('⚠️ ফাইল পড়া যায়নি', 'error');
-        } finally {
-            event.target.value = '';
-        }
+        } catch (err) { showToast('⚠️ ফাইল পড়া যায়নি', 'error'); }
+        finally { event.target.value = ''; }
     };
     reader.readAsText(file);
 }
-
 function createBackup() {
-    if (customers.length === 0) {
-        showToast('⚠️ কোন ডেটা নেই', 'error');
-        return;
-    }
-    localStorage.setItem(BACKUP_KEY, JSON.stringify({
-        customers: customers,
-        transactions: transactions,
-        rewards: rewards,
-        redemptions: redemptions,
-        settings: settings
-    }));
+    if (customers.length === 0) { showToast('⚠️ কোন ডেটা নেই', 'error'); return; }
+    localStorage.setItem(BACKUP_KEY, JSON.stringify({ customers, transactions, rewards, redemptions, settings }));
     showToast('💾 ব্যাকআপ সেভ হয়েছে', 'success');
 }
-
 function restoreBackup() {
-    var b = localStorage.getItem(BACKUP_KEY);
-    if (!b) {
-        if (confirm('লোকাল ব্যাকআপ নেই। ফাইল থেকে রিস্টোর করবেন?')) {
-            document.getElementById('restore-file').click();
-        }
-        return;
-    }
-    var data = JSON.parse(b);
-    showConfirm('🔄 রিস্টোর', data.customers.length + ' টি রেকর্ড রিস্টোর করবেন?', function() {
-        customers = data.customers || [];
+    const b = localStorage.getItem(BACKUP_KEY);
+    if (!b) { showToast('⚠️ কোন ব্যাকআপ নেই', 'error'); return; }
+    const data = JSON.parse(b);
+    showConfirm('🔄 রিস্টোর', `${data.customers.length} টি রেকর্ড রিস্টোর করবেন?`, () => {
+        customers = data.customers;
         transactions = data.transactions || [];
         rewards = data.rewards || [];
         redemptions = data.redemptions || [];
-        if (data.settings) {
-            for (var k in data.settings) {
-                if (data.settings.hasOwnProperty(k)) settings[k] = data.settings[k];
-            }
-        }
-        saveAll();
-        clearSearch();
-        renderAll();
-        loadSettingsToUI();
+        if (data.settings) settings = { ...settings, ...data.settings };
+        saveAll(); clearSearch(); renderAll(); loadSettingsToUI();
         showToast('🔄 রিস্টোর সফল', 'success');
     });
 }
 
-function restoreFromFile(event) {
-    var file = event.target.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e) {
-        try {
-            var data = JSON.parse(e.target.result);
-            if (!data.customers || !Array.isArray(data.customers)) {
-                showToast('⚠️ ভুল ব্যাকআপ ফাইল', 'error');
-                event.target.value = '';
-                return;
-            }
-            showConfirm('🔄 রিস্টোর', data.customers.length + ' টি রেকর্ড রিস্টোর করবেন?', function() {
-                customers = data.customers;
-                transactions = data.transactions || [];
-                rewards = data.rewards || [];
-                redemptions = data.redemptions || [];
-                if (data.settings) {
-                    for (var k in data.settings) {
-                        if (data.settings.hasOwnProperty(k)) settings[k] = data.settings[k];
-                    }
-                }
-                saveAll();
-                clearSearch();
-                renderAll();
-                loadSettingsToUI();
-                showToast('🔄 রিস্টোর সফল', 'success');
-            });
-        } catch (err) {
-            showToast('⚠️ ফাইল পড়া যায়নি', 'error');
-        } finally {
-            event.target.value = '';
-        }
-    };
-    reader.readAsText(file);
-}
-
 /* ============================================================
-   AUTO-SAVE
+   AUTO-SAVE (every 30s)
 ============================================================ */
-setInterval(function() { saveAll(); }, 30000);
+setInterval(() => { saveAll(); }, 30000);
 
 /* ============================================================
    RENDER ALL
 ============================================================ */
 function renderAll() {
     updateTable();
-    var dashTab = document.getElementById('tab-dashboard');
-    if (dashTab && dashTab.classList.contains('active')) renderDashboard();
-    var txTab = document.getElementById('tab-transactions');
-    if (txTab && txTab.classList.contains('active')) renderTransactions();
-    var rwTab = document.getElementById('tab-rewards');
-    if (rwTab && rwTab.classList.contains('active')) renderRewards();
+    if (document.getElementById('tab-dashboard').classList.contains('active')) renderDashboard();
+    if (document.getElementById('tab-transactions').classList.contains('active')) renderTransactions();
+    if (document.getElementById('tab-rewards').classList.contains('active')) renderRewards();
 }
 
 /* ============================================================
@@ -1720,40 +1597,34 @@ function renderAll() {
 ============================================================ */
 function init() {
     loadAll();
-
+    // Apply dark mode
     if (darkMode) {
         document.body.classList.add('dark-mode');
         document.getElementById('dark-btn').textContent = '☀️';
     }
+    // Apply saved language
     document.getElementById('lang-btn').textContent = currentLang === 'bn' ? 'EN' : 'বাং';
 
-    ['cust-name', 'cust-phone', 'cust-points'].forEach(function(id) {
-        var el = document.getElementById(id);
-        el.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                addCustomer();
-            }
+    // Enter key handlers
+    ['cust-name', 'cust-phone', 'cust-points'].forEach(id => {
+        document.getElementById(id).addEventListener('keypress', e => {
+            if (e.key === 'Enter') { e.preventDefault(); addCustomer(); }
         });
     });
-
-    document.getElementById('search-input').addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            searchCustomer();
-        }
+    document.getElementById('search-input').addEventListener('keypress', e => {
+        if (e.key === 'Enter') { e.preventDefault(); searchCustomer(); }
     });
-
-    document.getElementById('search-input').addEventListener('input', function() {
+    document.getElementById('search-input').addEventListener('input', function () {
         if (this.value.trim() === '') clearSearch();
         else searchCustomer(true);
     });
 
+    applyLanguage();
     renderAll();
 }
 
-// Start
+// Kick off
 init();
 </script>
 </body>
-                    </html>
+    </html>
